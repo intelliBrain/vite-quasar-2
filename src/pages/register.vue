@@ -1,18 +1,31 @@
 <template>
-  <div class="q-pa-md flex row flex-center page-login">
-    <div class="login-container col row">
-      <q-form greedy class="form-login col-12 col-md-5" @submit="onSubmit" @reset="onReset">
-        <div class="text-h4 q-my-sm">登录</div>
+  <div class="page-register q-pa-md flex row flex-center">
+    <div class="col row login-container">
+      <q-form class="form-login col-12 col-md-5" @submit="onSubmit" @reset="onReset">
+        <div class="text-h4 q-ma-sm">注册</div>
+        <q-input
+          v-model="form.email"
+          outlined
+          label="邮箱"
+          hint="填写邮箱"
+          lazy-rules
+          :rules="[(val) => (val && val.length > 0) || '请输入邮箱']"
+        >
+          <template #prepend>
+            <q-icon name="mail" />
+          </template>
+        </q-input>
+
         <q-input
           v-model="form.username"
           outlined
           label="用户名"
-          hint="填写邮箱或手机号"
+          hint="用户名可输入中文或者英文"
           lazy-rules
-          :rules="rules.username"
+          :rules="[(val) => (val && val.length > 0) || '请输入用户名']"
         >
           <template #prepend>
-            <icon-ic-baseline-perm-identity />
+            <q-icon name="account_circle" />
           </template>
         </q-input>
 
@@ -21,29 +34,44 @@
           outlined
           label="密码"
           lazy-rules
-          type="password"
-          :rules="rules.password"
+          :rules="[(val) => (val !== null && val !== '') || '请输入密码']"
         >
           <template #prepend>
-            <icon-bx-bx-lock-alt />
+            <q-icon name="lock" />
           </template>
         </q-input>
-        <!-- <q-toggle v-model="accept" label="记住密码" /> -->
-        <div class="q-checkbox">
-          <q-checkbox v-model="form.rememberMe" :rules="rules.rememberMe" label="10内保持登录" />
-        </div>
+
+        <q-input
+          v-model="form.authCode"
+          outlined
+          label="验证码"
+          lazy-rules
+          :rules="[(val) => (val !== null && val !== '') || '请输入验证码']"
+        >
+          <template #prepend>
+            <q-icon name="sms" />
+          </template>
+          <template #append>
+            <span class="text-body1 cursor-pointer">获取验证码</span>
+          </template>
+        </q-input>
+
+        <q-toggle v-model="accept" class="q-checkbox">
+          我同意 <router-link tag="a" :to="{ path: '/' }">隐私政策</router-link>
+        </q-toggle>
+
         <div>
           <q-btn
             class="btn-submit full-width no-outline text-h6"
             color="primary"
-            label="登录"
+            label="注册"
             type="submit"
           />
         </div>
 
         <div class="oath flex">
-          <div class="title full-width text-center q-pt-md">社交帐号登录</div>
-          <div class="q-gutter-md full-width text-center q-pt-sm">
+          <div class="title full-width text-center q-pt-md">社交帐号注册</div>
+          <div class="q-gutter-md full-width text-center q-pt-sm flex justify-center">
             <svg
               t="1615200042776"
               class="icon"
@@ -107,112 +135,84 @@
             </svg>
           </div>
         </div>
-        <div class="row justify-between q-pt-md text-grey-8">
-          <span>忘记密码</span>
-          <span
-            class="sign-up text-center cursor-pointer"
-            @click="$router.push({ path: '/register' })"
-          >
-            还没有账号？现在注册！
-          </span>
+
+        <div
+          class="sign-up q-pt-md text-center cursor-pointer"
+          @click="$router.push({ path: '/login' })"
+        >
+          已有有账号？现在登录！
         </div>
       </q-form>
     </div>
-    <slide-dialog
-      class="absolute-center"
-      @confirm="onSlideVerify"
-      @close="onSlideFail"
-      v-if="showSlideDialog"
-    />
   </div>
 </template>
 <script>
-import qs from 'qs'
 import { useQuasar } from 'quasar'
-import { ref, reactive, toRefs } from 'vue'
-import { userApi } from '@/api/user'
+import { reactive, ref, toRefs } from 'vue'
+import { userApi } from 'src/api/user'
 import { useRouter } from 'vue-router'
-import { decrypt } from '@/util/crypto'
-import SlideDialog from 'src/components/SlideDialog.vue'
 export default {
-  components: {
-    SlideDialog
-  },
   setup() {
     const $q = useQuasar()
 
-    const state = reactive({
-      form: { username: '', password: '', rememberMe: false, captcha: null }
+    let state = reactive({
+      form: {
+        email: '',
+        username: '',
+        password: '',
+        authCode: '',
+        accept: false,
+        captcha: null
+      }
     })
+    const accept = ref(false)
 
-    const rules = {
-      username: [(val) => (val && val.length > 0) || '请输入用户名'],
-      password: [(val) => (val && val.length > 0) || '请输入用户名'],
-      rememberMe: [(val) => !!val || 'You need to accept the license and terms first']
+    const onSubmit = () => {
+      if (accept.value !== true) {
+        $q.notify({
+          type: 'warning',
+          message: 'You need to accept the license and terms first'
+        })
+      } else {
+        userApi.register(state.form).then((res) => {
+          console.log(176, res)
+          if (res.code == 200) {
+            $q.notify({
+              type: 'positive',
+              message: 'Registered Success'
+            })
+            const router = useRouter()
+            router.push({ path: '/login' })
+          }
+        })
+      }
     }
-    const onSubmit = async () => {
-      showSlideDialog.value = true
-    }
-
     const onReset = () => {
-      state.form = { username: '', password: '', rememberMe: false, captcha: null }
-    }
-    const onSlideFail = () => {
-      console.log(162)
-      showSlideDialog.value = false
-    }
-    const onSlideVerify = (captcha) => {
-      console.log(captcha)
-      console.log(decrypt(captcha))
-      showSlideDialog.value = false
-      state.form.captcha = captcha
-      userApi.login(qs.stringify(state.form)).then((res) => {
-        if (res.code == 200) {
-          const { accessToken, refreshToken } = res.data
-          console.log($q.localStorage)
-          $q.localStorage.set('User/accessToken', {
-            expiresAt: accessToken.expiresAt,
-            tokenValue: accessToken.tokenValue
-          })
-
-          $q.localStorage.set('User/refreshToken', {
-            expiresAt: refreshToken.expiresAt,
-            tokenValue: refreshToken.tokenValue
-          })
-          $q.notify({
-            type: 'positive',
-            message: 'Login Success'
-          })
-          // console.log($store.getters['User/getAccessToken'])
-          router.push({ path: '/' })
-        }
+      state = reactive({
+        email: '',
+        username: '',
+        password: '',
+        authCode: '',
+        captcha: null
       })
     }
 
-    const router = new useRouter()
-
-    const showSlideDialog = ref(false)
     return {
       ...toRefs(state),
-      showSlideDialog,
-      rules,
+      accept,
       onSubmit,
-      onReset,
-      onSlideFail,
-      onSlideVerify
+      onReset
     }
   }
 }
 </script>
-<style lang="scss">
-.page-login {
-  .q-field--with-bottom {
-    padding: 18px 0;
-  }
+<style>
+.page-register .q-field--with-bottom {
+  padding: 18px 0;
 }
 </style>
 <style lang="scss" scoped>
-.page-login {
+.page-register {
   width: 100%;
   min-height: 100vh;
   // display: flex;
@@ -224,19 +224,22 @@ export default {
   background: linear-gradient(-135deg, #c850c0, #4158d0);
 
   .login-container {
-    max-width: 1080px;
     // width: 960px;
-    // display: flex;
-    // flex-wrap: wrap;
+    max-width: 1080px;
     .form-login {
       background: #f4f5f7 !important;
-      box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07) !important;
+
       border-radius: 10px;
+      // overflow: hidden;
+      // display: flex;
+      // flex-wrap: wrap;
+      // justify-content: space-between;
       padding: 1rem 2rem;
+      box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07) !important;
       margin: 0 auto;
     }
     .q-checkbox {
-      margin-top: 0px;
+      margin-top: -6px;
       user-select: none;
     }
     .btn-submit {
