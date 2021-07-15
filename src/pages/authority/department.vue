@@ -1,13 +1,5 @@
 <template>
   <div class="q-pa-md">
-    <div>
-      {{ state.department }}
-      <q-btn @click="openDailog"> 添加</q-btn>
-      <br />
-      <br />
-      <br />
-    </div>
-
     <div class="q-gutter-y-md">
       <q-card>
         <q-tabs
@@ -30,7 +22,6 @@
             <q-layout>
               <q-drawer
                 side="left"
-                v-model="drawerRight"
                 show-if-above
                 bordered
                 :width="300"
@@ -40,18 +31,24 @@
                 <q-scroll-area class="fit">
                   <div class="q-pa-sm">
                     <div class="q-pa-md q-gutter-sm">
-                      <q-tree :nodes="simple" node-key="label" />
+                      <q-tree
+                        :nodes="departmentTree"
+                        node-key="id"
+                        label-key="name"
+                        selected-color="primary"
+                        v-model:selected="departmentId"
+                        default-expand-all
+                      />
                     </div>
                   </div>
                 </q-scroll-area>
               </q-drawer>
               <q-page-container>
                 <q-page padding>
-                  <p v-for="n in 5" :key="n">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit nihil praesentium
-                    molestias a adipisci, dolore vitae odit, quidem consequatur optio voluptates
-                    asperiores pariatur eos numquam rerum delectus commodi perferendis voluptate?
-                  </p>
+                  {{ departmentId }}
+                  <q-btn class="q-mx-md" @click="editDepartment">设置</q-btn>
+                  <q-btn @click="createDepartment">添加子部门</q-btn>
+                  <div><user-list :departmentId="departmentId" v-if="departmentId" /></div>
                 </q-page>
               </q-page-container>
             </q-layout>
@@ -61,7 +58,6 @@
             <q-layout>
               <q-drawer
                 side="left"
-                v-model="drawerRight"
                 show-if-above
                 bordered
                 :width="300"
@@ -91,83 +87,113 @@
       </q-card>
     </div>
     <div>
-      <department-dailog
+      <department-dialog
         @confirm="onConfirm"
         @close="onClose"
-        v-if="showDailog"
-      ></department-dailog>
+        :currentDepartment="currentDepartment"
+        :parentDepartment="parentDepartment"
+        v-if="showDialog"
+      ></department-dialog>
     </div>
   </div>
 </template>
 
 <script>
-import { onMounted, ref, reactive } from 'vue'
+import { onMounted, ref, reactive, computed } from 'vue'
 import { departmentApi } from '@/api/department.js'
-import DepartmentDailog from '@/components/DepartmentDailog.vue'
+import DepartmentDialog from '@/components/DepartmentDialog.vue'
+import utils from '@/util/utils.js'
+import UserList from '@/components/UserList.vue'
+import { useQuasar } from 'quasar'
 export default {
-  components: { DepartmentDailog },
+  components: { DepartmentDialog, UserList },
   setup() {
+    const $q = useQuasar()
     const tab = ref('department')
-    const simple = ref([
-      {
-        label: 'Satisfied customers (with avatar)',
-        avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
-        children: [
-          {
-            label: 'Good food (with icon)',
-            icon: 'restaurant_menu',
-            children: [{ label: 'Quality ingredients' }, { label: 'Good recipe' }]
-          },
-          {
-            label: 'Good service (disabled node with icon)',
-            icon: 'room_service',
-            children: [{ label: 'Prompt attention' }, { label: 'Professional waiter' }]
-          },
-          {
-            label: 'Pleasant surroundings (with icon)',
-            icon: 'photo',
-            children: [
-              {
-                label: 'Happy atmosphere (with image)',
-                img: 'https://cdn.quasar.dev/img/logo_calendar_128px.png'
-              },
-              { label: 'Good table presentation' },
-              { label: 'Pleasing decor' }
-            ]
-          }
-        ]
-      }
-    ])
-    const expanded = ref(['Satisfied customers (with avatar)', 'Good food (with icon)'])
+    const departmentList = ref([])
+    const departmentTree = ref([])
+    const currentDepartment = ref([])
+    const department = computed(
+      () => departmentList.value.filter((dep) => dep.id == departmentId.value)[0]
+    )
+    const parentDepartment = computed(
+      () =>
+        departmentList.value.filter((dep) => dep.id == department.value.parentId)[0] || {
+          name: '公司'
+        }
+    )
     const state = reactive({
       department: {}
     })
-    const showDailog = ref(false)
-    const getDepartemtn = () => {
+    const showDialog = ref(false)
+    const code = ref('')
+    const departmentId = ref('')
+    const getDepartment = () => {
       departmentApi.get('1').then((res) => {
         state.department = res.data
       })
     }
-    const openDailog = () => {
-      showDailog.value = true
+    const createDepartment = () => {
+      if (!departmentId.value) {
+        $q.notify({
+          type: 'warning',
+          message: '请先选择部门'
+        })
+      } else {
+        currentDepartment.value = {}
+        showDialog.value = true
+      }
     }
-    const onConfirm = () => {
-      showDailog.value = false
+    const editDepartment = () => {
+      if (!departmentId.value) {
+        $q.notify({
+          type: 'warning',
+          message: '请先选择部门'
+        })
+      } else {
+        currentDepartment.value = department.value
+        showDialog.value = true
+      }
+    }
+    const onConfirm = (dep) => {
+      showDialog.value = false
     }
     const onClose = () => {
-      showDailog.value = false
+      showDialog.value = false
     }
-    onMounted(getDepartemtn)
+
+    const findByCode = () => {
+      departmentApi.findByCode(code.value).then((res) => {
+        console.log(rs.data)
+      })
+    }
+    const search = () => {
+      departmentApi.search().then((res) => {
+        departmentList.value = res.data
+        departmentTree.value = utils.buildTree(departmentList.value)
+      })
+    }
+    onMounted(() => {
+      getDepartment()
+      search()
+    })
 
     return {
+      departmentTree,
       tab,
-      simple,
-      expanded,
       state,
-      showDailog,
-      openDailog,
+      showDialog,
+      code,
+      createDepartment,
+      editDepartment,
       onConfirm,
-      onClose
+      onClose,
+      findByCode,
+      search,
+      departmentId,
+      department,
+      currentDepartment,
+      parentDepartment
     }
   }
 }
