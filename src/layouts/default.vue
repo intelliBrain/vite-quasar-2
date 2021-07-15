@@ -1,12 +1,28 @@
 <template>
-  <q-header class="bg-white text-primary shadow-sm">
-    <q-toolbar class="w-screen-xl m-auto">
-      <span class="cursor-pointer text-xl" @click="router.push({ path: '/' })"> Quasar App </span>
+  <q-header class="bg-white text-primary shadow-sm h-60px">
+    <q-toolbar class="w-screen-xl m-auto h-60px">
+      <span class="cursor-pointer text-xl text-gray-700" @click="router.push({ path: '/' })">
+        Quasar App
+      </span>
 
-      <q-tabs v-model="tab" inline-label class="text-primary">
-        <q-tab :ripple="false" name="homepage" icon="home" label="首页" />
-        <q-tab :ripple="false" name="authority" icon="verified_user" label="权限管理"> </q-tab>
-        <q-tab :ripple="false" name="syslog" icon="content_copy" label="日志管理"> </q-tab>
+      <q-tabs v-model="tab" inline-label class="text-primary h-60px">
+        <q-route-tab :ripple="false" to="/" name="homepage" icon="home" label="首页" />
+        <q-route-tab
+          :ripple="false"
+          to="/authority"
+          name="authority"
+          icon="verified_user"
+          label="权限管理"
+        >
+        </q-route-tab>
+        <q-route-tab
+          :ripple="false"
+          to="/system/log"
+          name="syslog"
+          icon="content_copy"
+          label="日志管理"
+        >
+        </q-route-tab>
         <q-tab :ripple="false" name="cat" icon="category" label="分类入口">
           <q-menu>
             <q-list style="min-width: 100px">
@@ -52,7 +68,7 @@
     </q-toolbar>
   </q-header>
 
-  <q-page-container class="page-container">
+  <q-page-container class="no-padding w-screen-xl p-0 mx-auto bg-white mt-20">
     <router-view />
   </q-page-container>
 
@@ -87,8 +103,8 @@ export default defineComponent({
   name: 'MainLayout',
   setup() {
     const router = useRouter()
-
     const tab = ref('homepage')
+
     return {
       tab,
       router
@@ -97,19 +113,14 @@ export default defineComponent({
 })
 </script>
 <style lang="scss" scoped>
-.page-header {
-  box-shadow: 0 1px 4px 0 rgb(0 21 41 / 12%);
-}
 .page-container {
-  width: 1280px;
   flex: 1;
-
-  margin: 70px auto 0;
-  border-radius: 4px;
-  border: 1px solid #ebeef5;
-  color: #303133;
-  transition: 0.3s;
-  background: #fff;
+  // margin: 70px auto 0;
+  // border-radius: 4px;
+  // border: 1px solid #ebeef5;
+  // color: #303133;
+  // transition: 0.3s;
+  // background: #fff;
 }
 .page-footer {
   background: #f0f2f5;
