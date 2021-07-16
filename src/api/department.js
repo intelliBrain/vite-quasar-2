@@ -6,5 +6,6 @@ export const departmentApi = {
   delete: (obj) => api.delete('/api/departments', obj),
   update: (obj) => api.post(`/api/departments/${obj.id}`, obj),
   findByCode: (code) => api.get(`/api/departments/code/${code}`),
+  findByName: (name) => api.get(`/api/departments/name/${name}`),
   search: () => api.get('/api/departments')
 }

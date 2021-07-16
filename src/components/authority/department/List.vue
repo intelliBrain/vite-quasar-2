@@ -14,15 +14,23 @@
     </section>
     <section class="main">
       <div>
-        <q-btn class="q-mx-md" @click="editDepartment">设置</q-btn>
-        <q-btn @click="createDepartment">添加子部门</q-btn>
+        <q-btn
+          class="q-mx-md"
+          outline
+          color="primary"
+          label="设置"
+          size="md"
+          @click="editDepartment"
+        />
+        <q-btn outline color="primary" label="添加子部门" size="md" @click="createDepartment" />
       </div>
     </section>
     <section>
       <department-dialog
-        @confirm="onConfirm"
+        @create="onCreate"
+        @update="onUpdate"
         @close="onClose"
-        :currentDepartment="currentDepartment"
+        :department="department"
         :parentDepartment="parentDepartment"
         v-if="showDialog"
       ></department-dialog>
@@ -33,7 +41,7 @@
 <script>
 import { ref, onMounted, computed } from 'vue'
 import { departmentApi } from '@/api/department.js'
-import DepartmentDialog from '@/components/DepartmentDialog.vue'
+import DepartmentDialog from '@/components/authority/department/Dialog.vue'
 import utils from '@/util/utils.js'
 import { useQuasar } from 'quasar'
 export default {
@@ -43,15 +51,16 @@ export default {
     const showDialog = ref(false)
     const departmentList = ref([])
     const departmentTree = ref([])
-    const currentDepartment = ref([])
     const departmentId = ref('')
+    const department = ref({})
+    const parentDepartment = ref({})
 
-    const department = computed(
+    const selectedDep = computed(
       () => departmentList.value.filter((dep) => dep.id == departmentId.value)[0]
     )
-    const parentDepartment = computed(
+    const selectedParentDep = computed(
       () =>
-        departmentList.value.filter((dep) => dep.id == department.value.parentId)[0] || {
+        departmentList.value.filter((dep) => dep.id == selectedDep.value.parentId)[0] || {
           name: '公司'
         }
     )
@@ -69,10 +78,8 @@ export default {
           message: '请先选择部门'
         })
       } else {
-        currentDepartment.value = {
-          name: department.value.name
-        }
-
+        parentDepartment.value = selectedDep.value
+        department.value = {}
         showDialog.value = true
       }
     }
@@ -83,11 +90,20 @@ export default {
           message: '请先选择部门'
         })
       } else {
-        currentDepartment.value = department.value
+        department.value = selectedDep.value
+        parentDepartment.value = selectedParentDep.value
         showDialog.value = true
       }
     }
-    const onConfirm = (dep) => {
+    const onCreate = (dep) => {
+      departmentList.value.push(dep)
+      departmentTree.value = utils.buildTree(departmentList.value)
+      showDialog.value = false
+    }
+    const onUpdate = (dep) => {
+      let index = utils.indexInArray(departmentList.value, dep.id)
+      departmentList.value.splice(index, 1, dep)
+      departmentTree.value = utils.buildTree(departmentList.value)
       showDialog.value = false
     }
     const onClose = () => {
@@ -99,14 +115,16 @@ export default {
     return {
       departmentList,
       departmentTree,
+      departmentId,
+      department,
+      selectedDep,
+      parentDepartment,
+      selectedParentDep,
       editDepartment,
       createDepartment,
-      onConfirm,
+      onCreate,
+      onUpdate,
       onClose,
-      department,
-      parentDepartment,
-      currentDepartment,
-      departmentId,
       showDialog
     }
   }
