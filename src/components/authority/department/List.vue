@@ -17,20 +17,15 @@
         <q-btn class="q-mx-md" @click="editDepartment">设置</q-btn>
         <q-btn @click="createDepartment">添加子部门</q-btn>
       </div>
-    </section>
-    <section>
-      <department-dialog
-        @confirm="onConfirm"
-        @close="onClose"
-        :currentDepartment="currentDepartment"
-        :parentDepartment="parentDepartment"
-        v-if="showDialog"
-      ></department-dialog>
-    <section class="aside">aside of department</section>
-    <section class="main">
-      main
       <UserList />
     </section>
+    <department-dialog
+      @confirm="onConfirm"
+      @close="onClose"
+      :currentDepartment="currentDepartment"
+      :parentDepartment="parentDepartment"
+      v-if="showDialog"
+    ></department-dialog>
   </article>
 </template>
 
@@ -42,8 +37,9 @@ import utils from '@/util/utils.js'
 import { useQuasar } from 'quasar'
 import UserList from 'src/components/authority/user/List.vue'
 export default {
-  components: { 
-    DepartmentDialog , UserList
+  components: {
+    DepartmentDialog,
+    UserList
   },
   setup() {
     return {}

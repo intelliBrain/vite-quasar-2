@@ -10,7 +10,7 @@ const parseError = (result) => {
     localStorage.setItem('lastUrl', router.currentRoute.fullPath)
     setTimeout(() => {
       router.push({
-        name: 'Login',
+        name: 'login',
         params: { redirect: router.currentRoute.fullPath }
       })
     }, 1000)
