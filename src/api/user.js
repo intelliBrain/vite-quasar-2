@@ -11,7 +11,10 @@ export const userApi = {
     }),
   register: (form) => api.post('api/users/registration', form),
   captchaLogin: (form) => api.post('/api/captcha/login', form),
-  currentUser: () => api.get('/api/users/current')
+  currentUser: () => api.get('/api/users/current'),
+  search: (params) => api.post('/api/users/search', params),
+  create: (params) => api.post('/api/users', params),
+  update: (params) => api.put('/api/users', params)
 }
 
 export const captchaApi = {
