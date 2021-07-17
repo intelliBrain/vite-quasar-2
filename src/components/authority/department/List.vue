@@ -167,6 +167,7 @@ export default {
       showDialog.value = false
     }
     //树的移动
+    const tree = ref()
     const getNodeParent = (elem) => {
       let parent = null
       while (elem.parentNode && !parent) {
@@ -214,9 +215,15 @@ export default {
         }
 
         if (toResult && toResult.node) {
-          if (toResult.node.children) toResult.node.children.splice(0, 0, fromResult.node)
-          else Vue.set(toResult.node, 'children', [fromResult.node])
+          if (toResult.node.children) {
+            toResult.node.children.splice(0, 0, fromResult.node)
+          } else {
+            // Vue.set(toResult.node, 'children', [fromResult.node])
+            toResult.node.children = []
+            toResult.node.children.push(fromResult.node)
+          }
           // this.$refs.tree.setExpanded(toResult.node.label, true)
+          tree.value.setExpanded(toResult.node.label, true)
         } else if (to === 'root') {
           departmentTree.value.splice(departmentTree.value.length, 0, fromResult.node)
         }
@@ -290,7 +297,8 @@ export default {
       dragLeave,
       dragStart,
       dragStop,
-      drop
+      drop,
+      tree
     }
   }
 }
