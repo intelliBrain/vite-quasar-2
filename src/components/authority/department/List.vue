@@ -10,6 +10,7 @@
           default-expand-all
           selected-color="primary"
           v-model:selected="departmentId"
+          class="mett-page-tree"
         >
           <template v-slot:default-header="prop">
             <div
@@ -172,16 +173,19 @@ export default {
       let parent = null
       while (elem.parentNode && !parent) {
         elem = elem.parentNode
-        if (elem.classList.contains('q-tree__node')) parent = elem
+        if (elem.classList.contains('q-tree__node')) {
+          parent = elem
+        }
       }
       return parent
     }
     const getNodeById = (node, id, currentIndex, parentNode) => {
       let array
       let parent
+      console.log(node, id, currentIndex, parentNode)
       if (!Array.isArray(node)) {
         parent = node
-        if (node.id === id) return { node: node, index: currentIndex, parent: parentNode }
+        if (node.id == id) return { node: node, index: currentIndex, parent: parentNode }
         array = node.children
       } else {
         array = node
@@ -197,24 +201,29 @@ export default {
       return null
     }
     const moveNode = (from, to) => {
-      if (from === to) return
-
-      // 根据id 查询该节点值
-      let fromResult = getNodeById(departmentTree.value, from, -1)
-
-      let toResult = to === 'root' ? null : getNodeById(departmentTree.value, to, -1)
+      if (from == to) {
+        return
+      }
+      const fromResult = getNodeById(departmentTree.value, from, -1)
+      const toResult = getNodeById(departmentTree.value, to, -1)
+      console.log('fromResult,toResult', fromResult, toResult)
 
       if (fromResult) {
-        // Return if trying to move a parent node into a child of that same parent
-        if (toResult && getNodeById(fromResult.node, toResult.node.id, -1)) return
+        // 如果尝试将父节点移动到同一父节点的子节点中，则返回
+        if (toResult && getNodeById(fromResult.node, toResult.node.id, -1)) {
+          return
+        }
 
+        //移动的父节点存在则有孩子,将原本存在删除,如果不存在则表明是一级标题，则删除原始数据
         if (fromResult.parent && fromResult.parent.children) {
           fromResult.parent.children.splice(fromResult.index, 1)
         } else {
           departmentTree.value.splice(fromResult.index, 1)
         }
 
+        //添加数据
         if (toResult && toResult.node) {
+          //如果投放的节点有孩子，则将孩子加入，不存在新建放入
           if (toResult.node.children) {
             toResult.node.children.splice(0, 0, fromResult.node)
           } else {
@@ -222,47 +231,65 @@ export default {
             toResult.node.children = []
             toResult.node.children.push(fromResult.node)
           }
-          // this.$refs.tree.setExpanded(toResult.node.label, true)
-          tree.value.setExpanded(toResult.node.label, true)
-        } else if (to === 'root') {
-          departmentTree.value.splice(departmentTree.value.length, 0, fromResult.node)
+          //展开
+          tree.value.setExpanded(toResult.node.id, true)
         }
       }
     }
     const dragEnter = (event) => {
+      console.log('dragEnter')
       event.preventDefault()
     }
     const dragOver = (event) => {
+      console.log('dragOver')
       event.preventDefault()
-      let target = event.target
-      if (target) target.classList.add('container')
+      const target = event.target
+      if (target) {
+        target.classList.add('container')
+      }
     }
     const dragLeave = (event) => {
+      console.log('dragLeave')
       event.preventDefault()
-      let target = event.target
-      if (target) target.classList.remove('container')
+      const target = event.target
+      if (target) {
+        target.classList.remove('container')
+      }
     }
     const dragStart = (event, key) => {
+      console.log('dragStart')
       if (event.target) {
-        let target = event.target
-        let parent = getNodeParent(target)
-        if (parent) parent.classList.add('dragging')
+        const target = event.target
+        const parent = getNodeParent(target)
+        if (parent) {
+          parent.classList.add('dragging')
+        }
       }
-      if (event.dataTransfer && event.target) event.dataTransfer.setData('node', key)
+      if (event.dataTransfer && event.target) {
+        event.dataTransfer.setData('node', key)
+      }
     }
     const dragStop = (event) => {
+      console.log('dragStop')
       if (event.target) {
-        let target = event.target
-        let parent = getNodeParent(target)
-        if (parent) parent.classList.remove('dragging')
+        const target = event.target
+        const parent = getNodeParent(target)
+        if (parent) {
+          parent.classList.remove('dragging')
+        }
       }
     }
     const drop = (event, key) => {
+      console.log('drop')
       event.preventDefault()
-      let target = event.target
+      const target = event.target
       let nodeKey = ''
-      if (event.dataTransfer) nodeKey = event.dataTransfer.getData('node')
-      if (target) target.classList.remove('container')
+      if (event.dataTransfer) {
+        nodeKey = event.dataTransfer.getData('node')
+      }
+      if (target) {
+        target.classList.remove('container')
+      }
       if (nodeKey) {
         moveNode(nodeKey, key)
         console.log(`Move ${nodeKey} to ${key}`)

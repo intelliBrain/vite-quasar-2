@@ -1,6 +1,7 @@
 <template>
   <div>
     <!-- 未完全实现， 参考https://codepen.io/Evertvdw/details/Bajqedj  -->
+    {{ simple }}
     <q-tree ref="tree" :nodes="simple" node-key="id" default-expand-all class="mett-page-tree">
       <template v-slot:default-header="prop">
         <div
