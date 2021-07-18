@@ -1,4 +1,6 @@
-export default {
+import { defineConfig } from 'windicss/helpers'
+
+export default defineConfig({
   theme: {
     padding: {
       sx: '4px',
@@ -16,4 +18,4 @@ export default {
       auto: 'auto'
     }
   }
-}
+})

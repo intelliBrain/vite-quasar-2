@@ -1,8 +1,7 @@
 import CryptoJS from 'crypto-js/crypto-js'
-
 // The default KEY and iv are consistent with the backend, not using the backend passkey
-const KEY = CryptoJS.enc.Utf8.parse('aaDJL2d9DfhLZO0z') // Key
-const IV = CryptoJS.enc.Utf8.parse('412ADDSSFA342442') // Offset
+const KEY = CryptoJS.enc.Utf8.parse(import.meta.env.VITE_KEY) // Key
+const IV = CryptoJS.enc.Utf8.parse(import.meta.env.VITE_IV) // Offset
 /**
  * AES encryption: string key iv returns base64
  */
