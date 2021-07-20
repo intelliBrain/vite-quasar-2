@@ -8,7 +8,14 @@
       <q-btn color="primary" size="md" @click="create">添加成员</q-btn>
     </div>
     <div class="q-mt-md">
-      <q-table :columns="columns" :rows="rows" row-key="name" class="no-box-shadow">
+      <q-table
+        :columns="columns"
+        :rows="rows"
+        row-key="name"
+        class="no-box-shadow"
+        hide-pagination
+        :rows-per-page-options="[0]"
+      >
         <template v-slot:body="props">
           <q-tr :props="props">
             <q-td key="name" :props="props">
