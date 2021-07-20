@@ -1,7 +1,6 @@
 import { Notify, LocalStorage } from 'quasar'
 import 'quasar/dist/quasar.prod.css'
-import '@quasar/extras/material-icons/material-icons.css'
-
+import iconSet from 'quasar/icon-set/svg-material-icons'
 export const quasarConfig = {
   config: {
     brand: {
@@ -15,8 +14,8 @@ export const quasarConfig = {
       warning: '#F2C037'
     },
     globalProperties: {}
-    // dark: true
   },
+  iconSet: iconSet,
   plugins: {
     Notify,
     LocalStorage
