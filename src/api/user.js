@@ -20,3 +20,10 @@ export const userApi = {
 export const captchaApi = {
   sendCaptchaCode: (contact) => api.post(`/api/captcha/${contact}`)
 }
+
+export const roleApi = {
+  list: () => api.get('/api/roles'),
+  create: (obj) => api.post('/api/roles', obj),
+  update: (obj) => api.put('/api/roles', obj),
+  findByName: (name) => api.get(`/api/roles/name/${name}`)
+}
