@@ -54,55 +54,57 @@
         <template v-slot:body="props">
           <q-tr :props="props">
             <q-td key="name" :props="props">
-              {{ props.row.name }}
+              {{ props.row.module }}
             </q-td>
-            <q-td key="calories" :props="props">
-              {{ props.row.calories }}
+            <q-td key="module" :props="props">
+              {{ props.row.module }}
             </q-td>
-            <q-td key="fat" :props="props">
-              {{ props.row.fat }}
-            </q-td>
-            <q-td key="carbs" :props="props">
-              {{ props.row.carbs }}
+            <q-td key="operate" :props="props">
+              {{ props.row.operate }}
             </q-td>
             <q-td key="carbs" :props="props">
-              {{ props.row.protein }}
+              {{ props.row.message }}
+            </q-td>
+            <q-td key="carbs" :props="props">
+              {{ props.row.createdAt }}
             </q-td>
             <q-td key="optType" :props="props">
-              <q-btn flat color="primary" label="查看详情" @click="viewDetail()" />
+              <q-btn flat color="primary" label="查看详情" @click="viewDetail(props.row.data)" />
             </q-td>
           </q-tr>
         </template>
-        <template v-slot:bottom> </template>
-        <template v-slot:pagination>
-          <span></span>
+        <template v-slot:bottom>
+          <div class="flex-1">
+            <div class="q-pa-sm pagination-end">
+              <q-pagination
+                v-model="current"
+                :max="5"
+                direction-links
+                boundary-links
+                icon-first="skip_previous"
+                icon-last="skip_next"
+                icon-prev="fast_rewind"
+                icon-next="fast_forward"
+                dense
+              />
+            </div>
+          </div>
         </template>
+        <template v-slot:pagination> </template>
       </q-table>
     </div>
 
-    <div class="q-pa-sm flex justify-end">
-      <q-pagination
-        v-model="current"
-        :max="5"
-        direction-links
-        boundary-links
-        icon-first="skip_previous"
-        icon-last="skip_next"
-        icon-prev="fast_rewind"
-        icon-next="fast_forward"
-        dense
-      />
-    </div>
-
     <div>
-      <log-dialog v-if="dialogVisible" @close="onClose" />
+      <log-dialog :item="selectedLog" v-if="dialogVisible" @close="onClose" />
     </div>
   </q-page>
 </template>
 
 <script>
 import { useQuasar } from 'quasar'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { systemApi } from '@/api/system.js'
+import dict from '@/util/dict.js'
 import LogDialog from '@/components/system/LogDialog.vue'
 export default {
   components: {
@@ -115,70 +117,66 @@ export default {
     const date2 = ref(null)
     const dialogVisible = ref(false)
     const current = ref(3)
+    const selectedLog = ref(null)
+
     const columns = [
       {
         name: 'name',
         label: '用户',
-        align: 'center',
-        field: (row) => row.name
+        align: 'center'
       },
       {
-        name: 'calories',
+        name: 'module',
         label: '模块',
-        align: 'center',
-        field: (row) => row.name
+        align: 'center'
       },
       {
-        name: 'fat',
+        name: 'operate',
         label: '操作',
-        align: 'center',
-        field: (row) => row.name
+        align: 'center'
       },
       {
         name: 'carbs',
         label: '消息',
-        align: 'center',
-        field: (row) => row.name
+        align: 'center'
       },
       {
         name: 'protein',
         label: '操作时间',
-        align: 'center',
-        field: (row) => row.name
+        align: 'center'
       },
       {
         name: 'optType',
         label: '操作',
-        align: 'center',
-        field: 'optType'
+        align: 'center'
       }
     ]
 
-    const rows = [
-      {
-        name: 'Frozen Yogurt',
-        calories: 159,
-        fat: 6.0,
-        carbs: 24,
-        protein: 4.0,
-        optType: 87
-      },
-      {
-        name: 'Ice cream sandwich',
-        calories: 237,
-        fat: 9.0,
-        carbs: 37,
-        protein: 4.3,
-        optType: 129
-      }
-    ]
-
-    const viewDetail = () => {
+    const viewDetail = (item) => {
+      selectedLog.value = item
       dialogVisible.value = true
     }
+
     const onClose = () => {
       dialogVisible.value = false
     }
+
+    const rows = ref([])
+
+    const search = () => {
+      systemApi.search({}).then((res) => {
+        rows.value = res.data.records.map((log) => {
+          log.module = dict.logModules[log.module.toUpperCase()]
+          log.operate = dict.logOperates[log.operate]
+          return log
+        })
+      })
+    }
+
+    onMounted(() => {
+      search()
+    })
+
     return {
       name,
       date1,
@@ -190,14 +188,17 @@ export default {
       dialogVisible,
       viewDetail,
       onClose,
-      current
+      current,
+      selectedLog
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.qtb {
-  min-height: 1px;
+.pagination-end {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
 }
 </style>
