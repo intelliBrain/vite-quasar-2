@@ -82,8 +82,7 @@
     </section>
     <section>
       <department-dialog
-        @create="onCreate"
-        @update="onUpdate"
+        @confirm="onConfirm"
         @close="onClose"
         :department="department"
         :parentDepartment="parentDepartment"
@@ -137,7 +136,7 @@ export default {
         })
       } else {
         parentDepartment.value = selectedDep.value
-        department.value = {}
+        department.value = { name: '' }
         showDialog.value = true
       }
     }
@@ -153,14 +152,13 @@ export default {
         showDialog.value = true
       }
     }
-    const onCreate = (dep) => {
-      departmentList.value.push(dep)
-      departmentTree.value = utils.buildTree(departmentList.value)
-      showDialog.value = false
-    }
-    const onUpdate = (dep) => {
-      let index = utils.indexInArray(departmentList.value, dep.id)
-      departmentList.value.splice(index, 1, dep)
+    const onConfirm = (dep) => {
+      if (!department.value.id) {
+        departmentList.value.push(dep)
+      } else {
+        let index = departmentList.value.findIndex((item) => item.id == dep.id)
+        departmentList.value.splice(index, 1, dep)
+      }
       departmentTree.value = utils.buildTree(departmentList.value)
       showDialog.value = false
     }
@@ -310,8 +308,7 @@ export default {
       selectedParentDep,
       editDepartment,
       createDepartment,
-      onCreate,
-      onUpdate,
+      onConfirm,
       onClose,
       showDialog,
       options: ['Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'],
