@@ -7,9 +7,15 @@
       <icon-mdi-bookmark class="text-warning text-h3" />
       <icon-mdi-stars class="text-accent text-h2" />
       <icon-mdi-beenhere class="text-dark text-h5" />
-      <icon-mdi-arrow-right />
+      <icon-carbon-warning />
       <icon-ic-outline-favorite class="text-info text-h2" />
     </div>
+
+    <q-btn color="primary" :icon="matMail" label="On Left" />
+    <q-btn color="secondary" :icon-right="matMail" label="On Right"> </q-btn>
+    <q-btn color="red" :icon="matMail" :icon-right="matSend" label="On Left and Right" />
+    <br />
+    <q-btn :icon="matPhone" label="Stacked" stack glossy color="purple" />
 
     <div>{prefix}-{collection}-{icon}</div>
 
@@ -29,9 +35,14 @@
 </template>
 
 <script>
+import { matMail, matSend, matPhone } from '@quasar/extras/material-icons'
 export default {
   setup() {
-    return {}
+    return {
+      matMail,
+      matSend,
+      matPhone
+    }
   }
 }
 </script>

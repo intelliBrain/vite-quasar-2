@@ -12,4 +12,7 @@ import 'src/styles/index.scss'
 import router from './router'
 import store from './store'
 
+// register vue composition api globally
+import 'vue-global-api'
+
 createApp(App).use(Quasar, quasarConfig).use(router).use(store).mount('#app')

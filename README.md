@@ -46,3 +46,59 @@ https://github.com/kutlugsahin/vue-smooth-dnd
 
 
 ## 指定layout
+
+
+## 使用 svg icon 
+
+There are many advantages of using only svg icons in your website/app:
+
+1. Better app footprint – only used icons will be included in the final build (treeshaking in action)
+2. Better quality icons
+3. No need for including equivalent webfonts from @quasar/extras or CDN.
+4. The current disadvantage is that it is more tedious to use these icons than their webfont counterpart.
+
+简单来讲，积极更小(按需加载)，不需要CDN，为统一，我们使用 svg-material-icons， 当然可以方便的导入其他icon
+
+
+### 配置
+1. 更新 quasar config ,以便系统的组件可以正常使用icon
+
+```js
+{
+  import iconSet from 'quasar/icon-set/svg-material-icons'
+  export const quasarConfig = {
+    config: {},
+    iconSet: iconSet,
+    plugins: {}
+  }
+}
+```
+
+这样配置之后 可以正常使用 notify等 quasar 组件
+
+2. vue 页面使用，按需导入
+
+```vue
+<template>
+  <div>
+    <q-icon :name="matMenu" />
+    <q-icon :name="fasFont" />
+    <q-btn :icon="mdiAbTesting" />
+  </div>
+</template>
+
+<script>
+import { matMenu } from '@quasar/extras/material-icons'
+import { mdiAbTesting } from '@quasar/extras/mdi-v5'
+import { fasFont } from '@quasar/extras/fontawesome-v5'
+
+export default {
+  // ...
+  created () {
+    this.matMenu = matMenu
+    this.mdiAbTesting = mdiAbTesting
+    this.fasFont = fasFont
+  }
+}
+```
+

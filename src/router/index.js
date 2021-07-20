@@ -40,13 +40,13 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const accessToken = LocalStorage.getItem('User/accessToken') || {}
-  const publicRoutes = ['Login', 'Register']
+  const publicRoutes = ['login', 'Register']
 
   if (!publicRoutes.includes(to.name) && !accessToken.tokenValue) {
     LocalStorage.set('lastUrl', to.path)
     console.log('Requested url rejected: ' + LocalStorage.getItem('lastUrl'))
 
-    next({ name: 'Login' })
+    next({ name: 'login' })
 
     return
   }
@@ -54,7 +54,7 @@ router.beforeEach((to, from, next) => {
   if (to.name === 'Logout') {
     LocalStorage.remove('lastUrl')
     LocalStorage.remove('User/accessToken')
-    next({ name: 'Login', params: { msgType: 'fromLogout' } })
+    next({ name: 'login', params: { msgType: 'fromLogout' } })
     return
   }
 
