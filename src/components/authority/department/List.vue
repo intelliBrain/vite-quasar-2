@@ -10,6 +10,7 @@
           default-expand-all
           selected-color="primary"
           v-model:selected="departmentId"
+          @update:selected="treeChanged"
           class="mett-page-tree"
         >
           <template v-slot:default-header="prop">
@@ -37,29 +38,39 @@
         <q-select
           outlined
           clearable
-          v-model="model"
-          :options="options"
+          dense
+          class="q-ma-md flex-1"
+          v-model="filter.departmentId"
+          :options="departmentList"
           label="请选择部门"
-          :dense="true"
-          class="q-ma-md flex-1"
+          option-value="id"
+          option-label="name"
+          emit-value
+          map-options
+          @update:model-value="depChanged"
         />
         <q-select
           outlined
           clearable
-          v-model="model"
-          :options="options"
+          dense
+          class="q-ma-md flex-1"
+          v-model="filter.enabled"
+          :options="enabledList"
           label="请选择状态"
-          :dense="true"
-          class="q-ma-md flex-1"
+          option-value="value"
+          option-label="label"
+          emit-value
+          map-options
+          @update:model-value="statusChanged"
         />
-        <q-select
+        <q-input
           outlined
           clearable
-          v-model="model"
-          :options="options"
-          label="姓名或者账号"
-          :dense="true"
+          dense
           class="q-ma-md flex-1"
+          v-model="filter.keyword"
+          label="姓名或者账号"
+          @update:model-value="keywordChanged"
         />
       </div>
       <div>
@@ -77,7 +88,7 @@
         <q-btn outline color="primary" label="添加子部门" size="md" @click="createDepartment" />
       </div>
       <div class="q-ma-md">
-        <List :department="selectedDep" />
+        <List :department="selectedDep" :filter="filter" />
       </div>
     </section>
     <section>
@@ -111,6 +122,49 @@ export default {
     const parentDepartment = ref({})
     //
     const model = ref()
+    const filter = ref({
+      departmentId: '',
+      enabled: '',
+      keyword: ''
+    })
+    const enabledList = ref([
+      {
+        label: '离职',
+        value: false
+      },
+      {
+        label: '在职',
+        value: true
+      }
+    ])
+    const treeChanged = (target) => {
+      console.log('treeChanged', target)
+      if (target != 1) {
+        filter.value = {
+          departmentId: target,
+          enabled: '',
+          keyword: ''
+        }
+      } else {
+        filter.value = {
+          departmentId: '',
+          enabled: '',
+          keyword: ''
+        }
+      }
+    }
+    const depChanged = () => {
+      // searchUsers()
+      console.log('depChanged')
+    }
+    const statusChanged = () => {
+      console.log('statusChanged')
+      // searchUsers()
+    }
+    const keywordChanged = () => {
+      console.log('keywordChanged')
+      // searchUsers()
+    }
     //
     const selectedDep = computed(
       () => departmentList.value.filter((dep) => dep.id == departmentId.value)[0] || {}
@@ -312,7 +366,15 @@ export default {
       onClose,
       showDialog,
       options: ['Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'],
+      //
+      filter,
       model,
+      enabledList,
+      treeChanged,
+      depChanged,
+      statusChanged,
+      keywordChanged,
+      //
       getNodeParent,
       getNodeById,
       moveNode,

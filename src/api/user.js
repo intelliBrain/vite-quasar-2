@@ -14,7 +14,8 @@ export const userApi = {
   currentUser: () => api.get('/api/users/current'),
   search: (params) => api.post('/api/users/search', params),
   create: (params) => api.post('/api/users', params),
-  update: (params) => api.put('/api/users', params)
+  update: (params) => api.put('/api/users', params),
+  list: (filter) => api.post('/api/users/list', filter)
 }
 
 export const captchaApi = {

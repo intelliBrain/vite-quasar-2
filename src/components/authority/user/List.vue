@@ -10,25 +10,28 @@
     <div class="q-mt-md">
       <q-table
         :columns="columns"
-        :rows="rows"
+        :rows="userList"
         row-key="name"
         class="no-box-shadow"
         hide-pagination
         :rows-per-page-options="[0]"
+        no-data-label="该条件没有查到符合的人员！"
       >
         <template v-slot:body="props">
           <q-tr :props="props">
-            <q-td key="name" :props="props">
-              {{ props.row.name }}
+            <q-td key="nickname" :props="props">
+              {{ props.row.nickname }}
             </q-td>
-            <q-td key="calories" :props="props">
-              {{ props.row.calories }}
+            <q-td key="department" :props="props">
+              {{ props.row.department.name }}
             </q-td>
-            <q-td key="fat" :props="props">
-              {{ props.row.fat }}
+            <q-td key="enabled" :props="props">
+              {{ props.row.enabled ? '在职' : '离职' }}
             </q-td>
-            <q-td key="carbs" :props="props">
-              {{ props.row.carbs }}
+            <q-td key="roles" :props="props">
+              <span v-for="role in props.row.roles" :key="role.id" class="pl-sm">
+                {{ role.name }}
+              </span>
             </q-td>
             <q-td key="operating" :props="props">
               <q-btn-dropdown
@@ -65,101 +68,55 @@
 </template>
 
 <script>
-import { toRefs } from 'vue'
+import { toRefs, onMounted, watch } from 'vue'
+import { userApi } from '@/api/user.js'
 export default {
   props: {
     department: {
       type: Object,
       required: true
+    },
+    filter: {
+      type: Object,
+      required: true
     }
   },
   setup(props, context) {
-    const { department } = toRefs(props)
+    const { department, filter } = toRefs(props)
     const columns = [
       {
-        name: 'name',
+        name: 'nickname',
         required: true,
         label: '姓名',
-        align: 'left',
-        field: (row) => row.name,
-        format: (val) => `${val}`,
-        sortable: true
+        align: 'left'
       },
-      { name: 'calories', align: 'center', label: '所在部门', field: 'calories' },
-      { name: 'fat', label: '状态', field: 'fat' },
-      { name: 'carbs', label: '角色', field: 'carbs' },
+      { name: 'department', align: 'center', label: '所在部门', field: 'department' },
+      { name: 'enabled', label: '状态', field: 'enabled' },
+      { name: 'roles', label: '角色', field: 'roles', align: 'center' },
       { name: 'operating', label: '操作', field: 'operating' }
     ]
-
-    const rows = [
-      {
-        name: 'Frozen Yogurt',
-        calories: 159,
-        fat: 6.0,
-        carbs: 24
-      },
-      {
-        name: 'Ice cream sandwich',
-        calories: 237,
-        fat: 9.0,
-        carbs: 37
-      },
-      {
-        name: 'Eclair',
-        calories: 262,
-        fat: 16.0,
-        carbs: 23
-      },
-      {
-        name: 'Cupcake',
-        calories: 305,
-        fat: 3.7,
-        carbs: 67
-      },
-      {
-        name: 'Gingerbread',
-        calories: 356,
-        fat: 16.0,
-        carbs: 49
-      },
-      {
-        name: 'Jelly bean',
-        calories: 375,
-        fat: 0.0,
-        carbs: 94
-      },
-      {
-        name: 'Lollipop',
-        calories: 392,
-        fat: 0.2,
-        carbs: 98
-      },
-      {
-        name: 'Honeycomb',
-        calories: 408,
-        fat: 3.2,
-        carbs: 87
-      },
-      {
-        name: 'Donut',
-        calories: 452,
-        fat: 25.0,
-        carbs: 51
-      },
-      {
-        name: 'KitKat',
-        calories: 518,
-        fat: 26.0,
-        carbs: 65
-      }
-    ]
+    const userList = ref([])
+    const searchUsers = () => {
+      userApi.list(filter.value).then((res) => {
+        userList.value = res.data.records
+      })
+    }
     const onItemClick = (item) => {
       console.log(item)
     }
     const create = () => {
       console.log('create')
     }
-    return { rows, columns, onItemClick, create }
+    onMounted(() => {
+      searchUsers()
+    })
+    watch(filter.value, (newValue, oldValue) => {
+      searchUsers()
+    })
+    watch(filter, (newValue, oldValue) => {
+      searchUsers()
+    })
+    return { columns, onItemClick, create, userList, searchUsers }
   }
 }
 </script>
