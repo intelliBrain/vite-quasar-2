@@ -16,7 +16,11 @@ export default defineConfig({
     WindiCSS(),
     ViteIcons(),
     ViteComponents({
-      dirs: ['src/component'], //临时解决vue名称冲突的问题
+      // generate `components.d.ts` for ts support with Volar
+      globalComponentsDeclaration: true,
+      // / Allow subdirectories as namespace prefix for components.
+      directoryAsNamespace: true,
+      // auto import icons
       customComponentResolvers: [
         ViteIconsResolver({
           componentPrefix: 'icon'
