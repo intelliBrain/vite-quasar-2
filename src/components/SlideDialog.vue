@@ -5,7 +5,7 @@
         <q-card-section class="flex justify-between items-center">
           <div class="text-subtitle1 text-weight-regular">请完成安全验证</div>
           <q-icon
-            name="close"
+            :name="matClose"
             size="sm"
             class="cursor-pointer text-weight-regular"
             @click="closeDialog"
@@ -31,7 +31,7 @@ import SlideVerify from 'src/components/SlideVerify.vue'
 import { defineComponent, ref } from 'vue'
 import { encrypt } from 'src/util/crypto.js'
 import { useRoute } from 'vue-router'
-
+import { matClose } from '@quasar/extras/material-icons'
 export default defineComponent({
   name: 'SlideDialog',
   components: {
@@ -69,6 +69,7 @@ export default defineComponent({
       // showSlideVerifyDialog.value = false
     }
     return {
+      matClose,
       msg,
       slideRef,
       onSuccess,

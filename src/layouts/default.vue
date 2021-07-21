@@ -36,7 +36,7 @@
               <q-item clickable>
                 <q-item-section>Preferences</q-item-section>
                 <q-item-section side>
-                  <q-icon name="keyboard_arrow_right" />
+                  <q-icon :name="matKeyboardArrowRight" />
                 </q-item-section>
 
                 <q-menu anchor="top end" self="top start">
@@ -44,7 +44,7 @@
                     <q-item v-for="n in 3" :key="n" clickable>
                       <q-item-section>Submenu Label</q-item-section>
                       <q-item-section side>
-                        <q-icon name="keyboard_arrow_right" />
+                        <q-icon :name="matKeyboardArrowRight" />
                       </q-item-section>
                       <q-menu auto-close anchor="top end" self="top start">
                         <q-list>
@@ -103,7 +103,8 @@ import {
   matHome,
   matVerifiedUser,
   matContentCopy,
-  matCategory
+  matCategory,
+  matKeyboardArrowRight
 } from '@quasar/extras/material-icons'
 export default defineComponent({
   name: 'MainLayout',
@@ -116,6 +117,7 @@ export default defineComponent({
       matVerifiedUser,
       matContentCopy,
       matCategory,
+      matKeyboardArrowRight,
       router
     }
   }
