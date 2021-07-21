@@ -113,9 +113,6 @@ export default {
     watch(filter.value, (newValue, oldValue) => {
       searchUsers()
     })
-    watch(filter, (newValue, oldValue) => {
-      searchUsers()
-    })
     return { columns, onItemClick, create, userList, searchUsers }
   }
 }
