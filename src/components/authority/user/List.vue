@@ -1,5 +1,6 @@
 <template>
   <div>
+    {{ filter }}
     <div class="row my-lg">
       <icon-mdi-account class="q-mr-sm text-h6" />
       <span class="text-subtitle2">全部人员(10人)</span>
@@ -110,7 +111,8 @@ export default {
     onMounted(() => {
       searchUsers()
     })
-    watch(filter.value, (newValue, oldValue) => {
+    watch(filter, (newValue, oldValue) => {
+      console.log(newValue, oldValue)
       searchUsers()
     })
     return { columns, onItemClick, create, userList, searchUsers }
