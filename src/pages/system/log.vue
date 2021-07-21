@@ -2,34 +2,54 @@
   <q-page>
     <q-form @submit="onSubmit" @reset="onReset">
       <div class="row">
-        <q-input outlined v-model="date1" label="操作时间（始）" class="p-sm flex-1" dense>
+        <q-input
+          outlined
+          v-model="params.startDate"
+          label="操作时间（始）"
+          class="p-sm flex-1"
+          dense
+        >
+          <q-popup-proxy transition-show="scale" transition-hide="scale">
+            <q-date v-model="params.startDate" mask="YYYY-MM-DD">
+              <div class="row items-center justify-end">
+                <q-btn v-close-popup label="Close" color="primary" flat />
+              </div>
+            </q-date>
+          </q-popup-proxy>
           <template v-slot:prepend>
-            <q-icon name="event" class="cursor-pointer">
-              <q-popup-proxy transition-show="scale" transition-hide="scale">
-                <q-date v-model="date1" mask="YYYY-MM-DD">
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
-                  </div>
-                </q-date>
-              </q-popup-proxy>
-            </q-icon>
+            <q-icon name="event" class="cursor-pointer"> </q-icon>
           </template>
         </q-input>
-        <q-input outlined v-model="date1" label="操作时间（终）" class="p-sm flex-1" dense>
+        <q-input outlined v-model="params.endDate" label="操作时间（终）" class="p-sm flex-1" dense>
+          <q-popup-proxy transition-show="scale" transition-hide="scale">
+            <q-date v-model="params.endDate" mask="YYYY-MM-DD" @update:model-value="goPage">
+              <div class="row items-center justify-end">
+                <q-btn v-close-popup label="确认" color="primary" flat />
+              </div>
+            </q-date>
+          </q-popup-proxy>
           <template v-slot:prepend>
-            <q-icon name="event" class="cursor-pointer">
-              <q-popup-proxy transition-show="scale" transition-hide="scale">
-                <q-date v-model="date1" mask="YYYY-MM-DD">
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
-                  </div>
-                </q-date>
-              </q-popup-proxy>
-            </q-icon>
+            <q-icon name="event" class="cursor-pointer"> </q-icon>
           </template>
         </q-input>
-        <q-select outlined v-model="model" :options="md" label="模块" class="p-sm flex-1" dense />
-        <q-input outlined bottom-slots v-model="text" label="消息" class="p-sm flex-1" dense>
+        <q-select
+          outlined
+          v-model="params.module"
+          :options="md"
+          label="模块"
+          class="p-sm flex-1"
+          dense
+          @update:model-value="goPage(3, 3)"
+        />
+        <q-input
+          outlined
+          bottom-slots
+          v-model="params.keyword"
+          label="消息"
+          class="p-sm flex-1"
+          dense
+          @update:model-value="search"
+        >
           <template v-slot:prepend>
             <q-icon name="search" />
           </template>
@@ -37,10 +57,11 @@
         <q-input
           outlined
           bottom-slots
-          v-model="text1"
+          v-model="params.name"
           label="姓名或者账号"
           class="p-sm flex-1"
           dense
+          @update:model-value="goPage(3, 6)"
         >
           <template v-slot:prepend>
             <q-icon name="search" />
@@ -50,7 +71,13 @@
     </q-form>
 
     <div class="q-pa-md">
-      <q-table :columns="columns" :rows="rows" row-key="name" class="no-box-shadow">
+      <q-table
+        :columns="columns"
+        :rows="rows"
+        :pagination="{ rowsPerPage: 10 }"
+        row-key="name"
+        class="no-box-shadow"
+      >
         <template v-slot:body="props">
           <q-tr :props="props">
             <q-td key="name" :props="props">
@@ -78,7 +105,8 @@
             <div class="q-pa-sm pagination-end">
               <q-pagination
                 v-model="current"
-                :max="5"
+                :max="pages"
+                :max-pages="10"
                 direction-links
                 boundary-links
                 icon-first="skip_previous"
@@ -116,8 +144,13 @@ export default {
     const date1 = ref(null)
     const date2 = ref(null)
     const dialogVisible = ref(false)
-    const current = ref(3)
+    const current = ref(2)
     const selectedLog = ref(null)
+    const msg = ref(null)
+    const pages = ref(0)
+    const params = ref({
+      page: 1
+    })
 
     const columns = [
       {
@@ -164,13 +197,25 @@ export default {
     const rows = ref([])
 
     const search = () => {
-      systemApi.search({}).then((res) => {
+      let filter = params.value
+
+      systemApi.search(filter).then((res) => {
         rows.value = res.data.records.map((log) => {
           log.module = dict.logModules[log.module.toUpperCase()]
           log.operate = dict.logOperates[log.operate]
           return log
         })
+
+        pages.value = 8
       })
+    }
+
+    const goPage = (v, p) => {
+      alert(p)
+    }
+
+    const changePage = () => {
+      alert(1)
     }
 
     onMounted(() => {
@@ -181,6 +226,7 @@ export default {
       name,
       date1,
       date2,
+      msg,
       md: ['Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'],
       columns,
       rows,
@@ -189,7 +235,12 @@ export default {
       viewDetail,
       onClose,
       current,
-      selectedLog
+      selectedLog,
+      goPage,
+      changePage,
+      pages,
+      params,
+      search
     }
   }
 }
