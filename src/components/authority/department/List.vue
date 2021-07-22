@@ -92,13 +92,13 @@
       </div>
     </section>
     <section>
-      <department-dialog
+      <DepartmentDialog
         @confirm="onConfirm"
         @close="onClose"
         :department="department"
         :parentDepartment="parentDepartment"
         v-if="showDialog"
-      ></department-dialog>
+      ></DepartmentDialog>
     </section>
   </article>
 </template>

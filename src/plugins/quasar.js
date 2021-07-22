@@ -9,7 +9,7 @@ export const quasarConfig = {
       accent: '#9C27B0',
       dark: '#1D1D1D',
       positive: '#21BA45',
-      negative: '#C10015',
+      negative: '#F56C6C',
       info: '#31CCEC',
       warning: '#F2C037'
     },

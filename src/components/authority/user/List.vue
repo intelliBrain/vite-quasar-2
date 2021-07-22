@@ -1,9 +1,8 @@
 <template>
   <div>
-    {{ filter }}
     <div class="row my-lg">
       <icon-mdi-account class="q-mr-sm text-h6" />
-      <span class="text-subtitle2">全部人员(10人)</span>
+      <span class="text-subtitle2">全部人员({{ userList.length }}人)</span>
     </div>
     <div class="bg-grey-2 q-py-sm q-pl-md">
       <q-btn color="primary" size="md" @click="create">添加成员</q-btn>
@@ -41,7 +40,7 @@
                 outline
                 size="md"
                 dense
-                @click="onItemClick('edit')"
+                @click="editUser(props.row)"
               >
                 <template v-slot:label>
                   <div class="row items-center no-wrap pl-sm">
@@ -50,7 +49,7 @@
                   </div>
                 </template>
                 <q-list class="text-caption" dense>
-                  <q-item clickable v-close-popup @click="onItemClick('password')">
+                  <q-item clickable v-close-popup @click="resetPassword(props.row)">
                     <q-item-section>
                       <q-item-label class="row">
                         <icon-mdi-square-edit-outline />
@@ -65,13 +64,25 @@
         </template>
       </q-table>
     </div>
+    <div>
+      <UserDialog v-if="userDialog" :user="user" @confirm="onConfirm" @close="onClose">
+      </UserDialog>
+      <PasswordResetDialog
+        v-if="passwordDialog"
+        @confirm="onPasswordConfirm"
+        @close="onPasswordClose"
+      ></PasswordResetDialog>
+    </div>
   </div>
 </template>
 
 <script>
 import { toRefs, onMounted, watch } from 'vue'
 import { userApi } from '@/api/user.js'
+import UserDialog from '@/components/authority/user/Dialog.vue'
+import PasswordResetDialog from '@/components/authority/user/PasswordResetDialog.vue'
 export default {
+  components: { UserDialog, PasswordResetDialog },
   props: {
     department: {
       type: Object,
@@ -102,12 +113,45 @@ export default {
         userList.value = res.data.records
       })
     }
-    const onItemClick = (item) => {
+    //人员修改开始
+    const user = ref({})
+    const userDialog = ref(false)
+    const passwordDialog = ref(false)
+
+    const create = () => {
+      user.value = {}
+      userDialog.value = true
+    }
+    const editUser = (item) => {
+      userDialog.value = true
+      user.value = item
       console.log(item)
     }
-    const create = () => {
-      console.log('create')
+    const resetPassword = (item) => {
+      passwordDialog.value = true
+      console.log(item)
     }
+    const onConfirm = (savedUser, dep) => {
+      if (dep.id == department.value.id || department.value.id == '1') {
+        if (user.value.id) {
+          let index = userList.value.findIndex((item) => item.id == user.value.id)
+          userList.value.splice(index, 1, savedUser)
+        } else {
+          userList.value.push(savedUser)
+        }
+      }
+      userDialog.value = false
+    }
+    const onClose = () => {
+      userDialog.value = false
+    }
+    const onPasswordConfirm = () => {
+      passwordDialog.value = false
+    }
+    const onPasswordClose = () => {
+      passwordDialog.value = false
+    }
+    //人员修改结束
     onMounted(() => {
       searchUsers()
     })
@@ -115,7 +159,23 @@ export default {
       console.log(newValue, oldValue)
       searchUsers()
     })
-    return { columns, onItemClick, create, userList, searchUsers }
+    return {
+      columns,
+      userList,
+      searchUsers,
+      //人员修改开始
+      user,
+      userDialog,
+      passwordDialog,
+      create,
+      editUser,
+      resetPassword,
+      onConfirm,
+      onClose,
+      onPasswordConfirm,
+      onPasswordClose
+      //人员修改结束
+    }
   }
 }
 </script>
