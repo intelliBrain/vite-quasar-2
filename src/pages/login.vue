@@ -133,7 +133,7 @@ import { ref, reactive, toRefs } from 'vue'
 import { userApi } from '@/api/user'
 import { useRouter } from 'vue-router'
 import { decrypt } from '@/util/crypto'
-import SlideDialog from 'src/components/SlideDialog.vue'
+import SlideDialog from '@/components/captcha/SlideDialog.vue'
 export default {
   components: {
     SlideDialog

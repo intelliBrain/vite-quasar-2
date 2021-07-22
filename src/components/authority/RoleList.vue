@@ -55,7 +55,7 @@
 
 <script>
 import { onMounted, ref } from 'vue'
-import RoleDialog from '@/components/authority/role/Dialog.vue'
+import RoleDialog from '@/components/authority/RoleDialog.vue'
 import { roleApi } from '@/api/user.js'
 export default {
   components: { RoleDialog },

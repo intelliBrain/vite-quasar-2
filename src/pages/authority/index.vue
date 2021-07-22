@@ -13,11 +13,11 @@
       <q-tab name="role" :label="tabs['role']"></q-tab>
     </q-tabs>
 
-    <q-tab-panels v-model="tab" animated>
-      <q-tab-panel name="role" class="no-padding">
+    <q-tab-panels v-model="tab" animated keep-alive>
+      <q-tab-panel :key="'role'" name="role" class="no-padding">
         <RoleList />
       </q-tab-panel>
-      <q-tab-panel name="department" class="no-padding">
+      <q-tab-panel :key="'department'" name="department" class="no-padding">
         <DepartmentList />
       </q-tab-panel>
     </q-tab-panels>
@@ -26,8 +26,8 @@
 
 <script>
 import { ref } from 'vue'
-import RoleList from 'src/components/authority/role/List.vue'
-import DepartmentList from 'src/components/authority/department/List.vue'
+import RoleList from '@/components/authority/RoleList.vue'
+import DepartmentList from '@/components/authority/DepartmentList.vue'
 export default {
   components: {
     RoleList,
