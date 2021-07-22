@@ -4,8 +4,32 @@
       <icon-mdi-account class="q-mr-sm text-h6" />
       <span class="text-subtitle2">全部人员({{ userList.length }}人)</span>
     </div>
-    <div class="bg-grey-2 q-py-sm q-pl-md">
-      <q-btn color="primary" size="md" @click="create">添加成员</q-btn>
+
+    <div class="bg-grey-2 q-py-md q-px-md">
+      <div class="row">
+        <q-btn color="primary" size="md" @click="create">添加成员</q-btn>
+        <q-select
+          outlined
+          clearable
+          dense
+          class="q-mx-md w-220px"
+          v-model="params.enabled"
+          :options="statusOptions"
+          label="请选择状态"
+          option-value="value"
+          option-label="label"
+          emit-value
+          map-options
+        />
+        <q-input
+          outlined
+          clearable
+          dense
+          class="w-220px"
+          v-model="params.keyword"
+          label="姓名或者账号"
+        />
+      </div>
     </div>
     <div class="q-mt-md">
       <q-table
@@ -77,24 +101,28 @@
 </template>
 
 <script>
-import { toRefs, onMounted, watch } from 'vue'
+import { toRefs, onMounted, watch, ref, reactive, watchEffect } from 'vue'
 import { userApi } from '@/api/user.js'
-import UserDialog from '@/components/authority/user/Dialog.vue'
+import UserDialog from '@/components/authority/UserDialog.vue'
 import PasswordResetDialog from '@/components/authority/user/PasswordResetDialog.vue'
 export default {
   components: { UserDialog, PasswordResetDialog },
   props: {
-    department: {
-      type: Object,
-      required: true
-    },
-    filter: {
-      type: Object,
+    departmentId: {
+      type: Number,
       required: true
     }
   },
   setup(props, context) {
-    const { department, filter } = toRefs(props)
+    const { departmentId } = toRefs(props)
+    const state = reactive({
+      params: { departmentId: '', enabled: '', keyword: '' }
+    })
+    const statusOptions = [
+      { label: '离职', value: false },
+      { label: '在职', value: true }
+    ]
+
     const columns = [
       {
         name: 'nickname',
@@ -109,7 +137,8 @@ export default {
     ]
     const userList = ref([])
     const searchUsers = () => {
-      userApi.list(filter.value).then((res) => {
+      state.params.departmentId = departmentId
+      userApi.list(state.params).then((res) => {
         userList.value = res.data.records
       })
     }
@@ -155,9 +184,17 @@ export default {
     onMounted(() => {
       searchUsers()
     })
-    watch(filter, (newValue, oldValue) => {
-      console.log(newValue, oldValue)
+    watch(state, (newValue, oldValue) => {
+      console.log(150, newValue, oldValue)
       searchUsers()
+    })
+
+    watch(departmentId, (newValue, oldValue) => {
+      console.log(155, newValue, oldValue)
+      searchUsers()
+    })
+    watchEffect(() => {
+      console.log(state.params, departmentId)
     })
     return {
       columns,
@@ -173,7 +210,9 @@ export default {
       onConfirm,
       onClose,
       onPasswordConfirm,
-      onPasswordClose
+      onPasswordClose,
+      statusOptions,
+      ...toRefs(state)
       //人员修改结束
     }
   }
