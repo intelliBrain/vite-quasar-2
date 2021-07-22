@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <q-form @submit="onSubmit" @reset="onReset">
-      <div class="row">
+      <div class="row q-pa-md">
         <q-input
           outlined
           v-model="params.startDate"
@@ -9,37 +9,38 @@
           class="p-sm flex-1"
           dense
         >
-          <q-popup-proxy transition-show="scale" transition-hide="scale">
-            <q-date v-model="params.startDate" mask="YYYY-MM-DD">
-              <div class="row items-center justify-end">
-                <q-btn v-close-popup label="Close" color="primary" flat />
-              </div>
+          <q-popup-proxy transition-show="scale" transition-hide="scale" ref="popStartDate">
+            <q-date
+              v-model="params.startDate"
+              mask="YYYY-MM-DD"
+              @update:model-value="closeDateDialog"
+            >
             </q-date>
           </q-popup-proxy>
           <template v-slot:prepend>
-            <q-icon name="event" class="cursor-pointer"> </q-icon>
+            <q-icon :name="matEvent" class="cursor-pointer"> </q-icon>
           </template>
         </q-input>
         <q-input outlined v-model="params.endDate" label="操作时间（终）" class="p-sm flex-1" dense>
           <q-popup-proxy transition-show="scale" transition-hide="scale">
-            <q-date v-model="params.endDate" mask="YYYY-MM-DD" @update:model-value="goPage">
+            <q-date v-model="params.endDate" mask="YYYY-MM-DD">
               <div class="row items-center justify-end">
                 <q-btn v-close-popup label="确认" color="primary" flat />
               </div>
             </q-date>
           </q-popup-proxy>
           <template v-slot:prepend>
-            <q-icon name="event" class="cursor-pointer"> </q-icon>
+            <q-icon :name="matEvent" class="cursor-pointer"> </q-icon>
           </template>
         </q-input>
         <q-select
           outlined
-          v-model="params.module"
-          :options="md"
+          v-model="module"
+          :options="modules"
           label="模块"
           class="p-sm flex-1"
           dense
-          @update:model-value="goPage(3, 3)"
+          @update:model-value="searchLogs"
         />
         <q-input
           outlined
@@ -48,10 +49,10 @@
           label="消息"
           class="p-sm flex-1"
           dense
-          @update:model-value="search"
+          @update:model-value="searchLogs"
         >
           <template v-slot:prepend>
-            <q-icon name="search" />
+            <q-icon :name="matSearch" />
           </template>
         </q-input>
         <q-input
@@ -61,10 +62,10 @@
           label="姓名或者账号"
           class="p-sm flex-1"
           dense
-          @update:model-value="goPage(3, 6)"
+          @update:model-value="searchLogs"
         >
           <template v-slot:prepend>
-            <q-icon name="search" />
+            <q-icon :name="matSearch" />
           </template>
         </q-input>
       </div>
@@ -81,7 +82,7 @@
         <template v-slot:body="props">
           <q-tr :props="props">
             <q-td key="name" :props="props">
-              {{ props.row.module }}
+              {{ props.row.name }}
             </q-td>
             <q-td key="module" :props="props">
               {{ props.row.module }}
@@ -89,13 +90,13 @@
             <q-td key="operate" :props="props">
               {{ props.row.operate }}
             </q-td>
-            <q-td key="carbs" :props="props">
+            <q-td key="message" :props="props">
               {{ props.row.message }}
             </q-td>
-            <q-td key="carbs" :props="props">
+            <q-td key="createdAt" :props="props">
               {{ props.row.createdAt }}
             </q-td>
-            <q-td key="optType" :props="props">
+            <q-td key="data" :props="props">
               <q-btn flat color="primary" label="查看详情" @click="viewDetail(props.row.data)" />
             </q-td>
           </q-tr>
@@ -104,16 +105,17 @@
           <div class="flex-1">
             <div class="q-pa-sm pagination-end">
               <q-pagination
-                v-model="current"
+                v-model="params.page"
                 :max="pages"
                 :max-pages="10"
                 direction-links
                 boundary-links
-                icon-first="skip_previous"
-                icon-last="skip_next"
-                icon-prev="fast_rewind"
-                icon-next="fast_forward"
+                :icon-first="matSkipPrevious"
+                :icon-last="matSkipNext"
+                :icon-prev="matFastRewind"
+                :icon-next="matFastForward"
                 dense
+                @click="search"
               />
             </div>
           </div>
@@ -129,61 +131,76 @@
 </template>
 
 <script>
-import { useQuasar } from 'quasar'
 import { ref, onMounted } from 'vue'
 import { systemApi } from '@/api/system.js'
 import dict from '@/util/dict.js'
 import LogDialog from '@/components/system/LogDialog.vue'
+import {
+  matClose,
+  matEvent,
+  matSearch,
+  matSkipPrevious,
+  matSkipNext,
+  matFastRewind,
+  matFastForward
+} from '@quasar/extras/material-icons'
+
 export default {
   components: {
     LogDialog
   },
   setup() {
-    const $q = useQuasar()
-    const name = ref(null)
-    const date1 = ref(null)
-    const date2 = ref(null)
     const dialogVisible = ref(false)
-    const current = ref(2)
     const selectedLog = ref(null)
-    const msg = ref(null)
+    const module = ref(null)
     const pages = ref(0)
     const params = ref({
       page: 1
     })
 
+    const moduleList = []
+    Object.keys(dict.logModules).forEach((k) => {
+      let item = {}
+      item['value'] = k
+      item['label'] = dict.logModules[k]
+      moduleList.push(item)
+    })
+    const modules = ref(moduleList)
+
     const columns = [
       {
         name: 'name',
         label: '用户',
-        align: 'center'
+        align: 'left'
       },
       {
         name: 'module',
         label: '模块',
-        align: 'center'
+        align: 'left'
       },
       {
         name: 'operate',
-        label: '操作',
-        align: 'center'
+        label: '操作类型',
+        align: 'left'
       },
       {
-        name: 'carbs',
+        name: 'message',
         label: '消息',
-        align: 'center'
+        align: 'left'
       },
       {
-        name: 'protein',
+        name: 'createdAt',
         label: '操作时间',
         align: 'center'
       },
       {
-        name: 'optType',
+        name: 'data',
         label: '操作',
         align: 'center'
       }
     ]
+
+    const rows = ref([])
 
     const viewDetail = (item) => {
       selectedLog.value = item
@@ -194,28 +211,36 @@ export default {
       dialogVisible.value = false
     }
 
-    const rows = ref([])
+    const goPop = () => {
+      alert(901)
+      //$refs.popStartDate.hide()
+    }
+
+    const searchLogs = () => {
+      params.value.page = 1
+      search()
+    }
 
     const search = () => {
       let filter = params.value
+      if (module.value) {
+        let m = module.value
+        filter.module = m.value
+      }
 
       systemApi.search(filter).then((res) => {
         rows.value = res.data.records.map((log) => {
           log.module = dict.logModules[log.module.toUpperCase()]
           log.operate = dict.logOperates[log.operate]
+          if (log.createdBy.nickname) {
+            log.name = log.createdBy.nickname
+          } else {
+            log.name = log.createdBy.username
+          }
           return log
         })
-
-        pages.value = 8
+        pages.value = res.data.pages
       })
-    }
-
-    const goPage = (v, p) => {
-      alert(p)
-    }
-
-    const changePage = () => {
-      alert(1)
     }
 
     onMounted(() => {
@@ -223,24 +248,32 @@ export default {
     })
 
     return {
-      name,
-      date1,
-      date2,
-      msg,
-      md: ['Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'],
+      modules,
       columns,
       rows,
-      logData: {},
+      module,
       dialogVisible,
       viewDetail,
       onClose,
-      current,
       selectedLog,
-      goPage,
-      changePage,
       pages,
       params,
-      search
+      search,
+      searchLogs,
+      matClose,
+      matEvent,
+      matSearch,
+      matSkipPrevious,
+      matSkipNext,
+      matFastRewind,
+      matFastForward,
+      goPop
+    }
+  },
+  methods: {
+    closeDateDialog() {
+      this.$refs.popStartDate.hide()
+      this.searchLogs()
     }
   }
 }

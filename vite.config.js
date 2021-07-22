@@ -16,6 +16,11 @@ export default defineConfig({
     WindiCSS(),
     ViteIcons(),
     ViteComponents({
+      // generate `components.d.ts` for ts support with Volar
+      globalComponentsDeclaration: true,
+      // / Allow subdirectories as namespace prefix for components.
+      directoryAsNamespace: true,
+      // auto import icons
       customComponentResolvers: [
         ViteIconsResolver({
           componentPrefix: 'icon'

@@ -6,12 +6,12 @@
       </span>
 
       <q-tabs v-model="tab" inline-label class="text-primary h-60px">
-        <q-route-tab :ripple="false" to="/" name="homepage" icon="home" label="首页" />
+        <q-route-tab :ripple="false" to="/" name="homepage" :icon="matHome" label="首页" />
         <q-route-tab
           :ripple="false"
           to="/authority"
           name="authority"
-          icon="verified_user"
+          :icon="matVerifiedUser"
           label="权限管理"
         >
         </q-route-tab>
@@ -19,11 +19,11 @@
           :ripple="false"
           to="/system/log"
           name="syslog"
-          icon="content_copy"
+          :icon="matContentCopy"
           label="日志管理"
         >
         </q-route-tab>
-        <q-tab :ripple="false" name="cat" icon="category" label="分类入口">
+        <q-tab :ripple="false" name="cat" :icon="matCategory" label="分类入口">
           <q-menu>
             <q-list style="min-width: 100px">
               <q-item clickable v-close-popup>
@@ -36,7 +36,7 @@
               <q-item clickable>
                 <q-item-section>Preferences</q-item-section>
                 <q-item-section side>
-                  <q-icon name="keyboard_arrow_right" />
+                  <q-icon :name="matKeyboardArrowRight" />
                 </q-item-section>
 
                 <q-menu anchor="top end" self="top start">
@@ -44,7 +44,7 @@
                     <q-item v-for="n in 3" :key="n" clickable>
                       <q-item-section>Submenu Label</q-item-section>
                       <q-item-section side>
-                        <q-icon name="keyboard_arrow_right" />
+                        <q-icon :name="matKeyboardArrowRight" />
                       </q-item-section>
                       <q-menu auto-close anchor="top end" self="top start">
                         <q-list>
@@ -97,16 +97,27 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import {
+  matHome,
+  matVerifiedUser,
+  matContentCopy,
+  matCategory,
+  matKeyboardArrowRight
+} from '@quasar/extras/material-icons'
 export default defineComponent({
   name: 'MainLayout',
   setup() {
     const router = useRouter()
     const tab = ref('homepage')
-
     return {
       tab,
+      matHome,
+      matVerifiedUser,
+      matContentCopy,
+      matCategory,
+      matKeyboardArrowRight,
       router
     }
   }

@@ -14,8 +14,6 @@
 // @ is an alias to /src
 import HelloWorld from 'src/components/HelloWorld.vue'
 import { userApi } from 'src/api/user'
-import { onMounted } from 'vue'
-import { useQuasar } from 'quasar'
 
 export default {
   name: 'Home',
@@ -26,6 +24,8 @@ export default {
     onMounted(() => {
       getCms()
     })
+    const state = reactive({ name: 'allen' })
+    console.log(state)
     const getCms = () => {
       userApi.currentUser().then((res) => {
         console.log(res)
