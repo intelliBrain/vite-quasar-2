@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { departmentApi } from '@/api/department.js'
 import DepartmentDialog from '@/components/authority/department/Dialog.vue'
 import List from '@/components/authority/user/List.vue'
@@ -122,10 +122,12 @@ export default {
     const parentDepartment = ref({})
     //
     const model = ref()
-    const filter = ref({
-      departmentId: '',
-      enabled: '',
-      keyword: ''
+    const state = reactive({
+      filter: {
+        departmentId: '',
+        enabled: '',
+        keyword: ''
+      }
     })
     const enabledList = ref([
       {
@@ -140,13 +142,13 @@ export default {
     const treeChanged = (target) => {
       console.log('treeChanged', target)
       if (target != 1) {
-        filter.value = {
+        state.filter = {
           departmentId: target,
           enabled: '',
           keyword: ''
         }
       } else {
-        filter.value = {
+        state.filter = {
           departmentId: '',
           enabled: '',
           keyword: ''
@@ -367,7 +369,7 @@ export default {
       showDialog,
       options: ['Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'],
       //
-      filter,
+      ...toRefs(state),
       model,
       enabledList,
       treeChanged,
