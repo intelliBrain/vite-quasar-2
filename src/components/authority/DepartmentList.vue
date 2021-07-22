@@ -26,7 +26,7 @@
     <section class="main">
       <div>
         <span class="text-h6 vertical-middle q-ml-md">
-          {{ selectedDep.name }}
+          {{ selectedDep.name || '公司' }}
         </span>
         <q-btn
           class="q-mx-md"
@@ -39,7 +39,7 @@
         <q-btn outline color="primary" label="添加子部门" size="md" @click="createDepartment" />
       </div>
       <div class="q-ma-md">
-        <UserList :departmentId="departmentId" />
+        <UserList :department="selectedDep" />
       </div>
     </section>
     <section>
@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { ref, reactive, onMounted, computed, toRefs } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { departmentApi } from '@/api/department.js'
 import DepartmentDialog from '@/components/authority/DepartmentDialog.vue'
 import UserList from '@/components/authority/UserList.vue'
@@ -75,11 +75,11 @@ export default {
     const model = ref()
 
     const selectedDep = computed(
-      () => departmentList.value.find((dep) => dep.id == departmentId) || {}
+      () => departmentList.value.find((dep) => dep.id == departmentId.value) || {}
     )
     const selectedParentDep = computed(
       () =>
-        departmentList.value.filter((dep) => dep.id == selectedDep.value.parentId) || {
+        departmentList.value.find((dep) => dep.id == selectedDep.value.parentId) || {
           name: '公司'
         }
     )
@@ -91,7 +91,7 @@ export default {
       })
     }
     const createDepartment = () => {
-      if (!departmentId) {
+      if (!departmentId.value) {
         $q.notify({
           type: 'warning',
           message: '请先选择部门'
@@ -103,7 +103,7 @@ export default {
       }
     }
     const editDepartment = () => {
-      if (!departmentId) {
+      if (!departmentId.value) {
         $q.notify({
           type: 'warning',
           message: '请先选择部门'

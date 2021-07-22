@@ -184,9 +184,7 @@ export default {
     const onSubmit = () => {
       let promise = null
       state.form.roles = state.form.roles.map((item) => ({ id: item }))
-      state.form.department = {
-        id: state.form.departmentId
-      }
+      state.form.department = departments.value.find((item) => item.id == state.form.departmentId)
       if (state.form.id) {
         promise = userApi.update(state.form)
       } else {

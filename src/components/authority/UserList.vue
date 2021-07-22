@@ -108,13 +108,13 @@ import PasswordResetDialog from '@/components/authority/user/PasswordResetDialog
 export default {
   components: { UserDialog, PasswordResetDialog },
   props: {
-    departmentId: {
-      type: Number,
+    department: {
+      type: Object,
       required: true
     }
   },
   setup(props, context) {
-    const { departmentId } = toRefs(props)
+    const { department } = toRefs(props)
     const state = reactive({
       params: { departmentId: '', enabled: '', keyword: '' }
     })
@@ -137,7 +137,7 @@ export default {
     ]
     const userList = ref([])
     const searchUsers = () => {
-      state.params.departmentId = departmentId
+      state.params.departmentId = department.value.id == '1' ? '' : department.value.id
       userApi.list(state.params).then((res) => {
         userList.value = res.data.records
       })
@@ -161,13 +161,15 @@ export default {
       console.log(item)
     }
     const onConfirm = (savedUser, dep) => {
-      if (dep.id == department.value.id || department.value.id == '1') {
+      let index = userList.value.findIndex((item) => item.id == user.value.id)
+      if (dep.id == department.value.id || department.value.id == '1' || !department.value.id) {
         if (user.value.id) {
-          let index = userList.value.findIndex((item) => item.id == user.value.id)
           userList.value.splice(index, 1, savedUser)
         } else {
           userList.value.push(savedUser)
         }
+      } else if (dep.id != department.value.id) {
+        userList.value.splice(index, 1)
       }
       userDialog.value = false
     }
@@ -184,17 +186,8 @@ export default {
     onMounted(() => {
       searchUsers()
     })
-    watch(state, (newValue, oldValue) => {
-      console.log(150, newValue, oldValue)
+    watch([state, department], (newValue, oldValue) => {
       searchUsers()
-    })
-
-    watch(departmentId, (newValue, oldValue) => {
-      console.log(155, newValue, oldValue)
-      searchUsers()
-    })
-    watchEffect(() => {
-      console.log(state.params, departmentId)
     })
     return {
       columns,
