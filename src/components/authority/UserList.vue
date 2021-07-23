@@ -143,7 +143,7 @@ export default {
       { name: 'department', align: 'center', label: '所在部门', field: 'department' },
       { name: 'enabled', label: '状态', field: 'enabled' },
       { name: 'roles', label: '角色', field: 'roles', align: 'center' },
-      { name: 'operating', label: '操作', field: 'operating' }
+      { name: 'operating', label: '操作', field: 'operating', align: 'center' }
     ]
     const userList = ref([])
     const pages = ref(1)
