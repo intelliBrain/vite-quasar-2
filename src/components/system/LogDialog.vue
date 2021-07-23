@@ -1,13 +1,13 @@
 <template>
   <q-dialog v-model="fixed">
-    <q-card style="width: 55%">
+    <q-card style="width: 55%; height: 70%">
       <q-card-section>
         <div class="text-h6">查看</div>
       </q-card-section>
 
       <q-separator />
 
-      <q-card-section style="max-height: 50vh" class="scroll">
+      <q-card-section style="height: 70%" class="scroll">
         <vue-json-pretty :data="jsonData"> </vue-json-pretty>
       </q-card-section>
 

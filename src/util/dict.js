@@ -34,7 +34,8 @@ const logOperates = {
   UNPUBLISH: '下架',
   AUDIT: '审核',
   SYNC_WECHAT: '同步微信',
-  SYNC_WEIBO: '同步微博'
+  SYNC_WEIBO: '同步微博',
+  LOGIN: '登录'
 }
 export default {
   logModules,

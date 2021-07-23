@@ -13,7 +13,7 @@
             <q-date
               v-model="params.startDate"
               mask="YYYY-MM-DD"
-              @update:model-value="closeDateDialog"
+              @update:model-value="closeDateDialog('start')"
             >
             </q-date>
           </q-popup-proxy>
@@ -22,11 +22,12 @@
           </template>
         </q-input>
         <q-input outlined v-model="params.endDate" label="操作时间（终）" class="p-sm flex-1" dense>
-          <q-popup-proxy transition-show="scale" transition-hide="scale">
-            <q-date v-model="params.endDate" mask="YYYY-MM-DD">
-              <div class="row items-center justify-end">
-                <q-btn v-close-popup label="确认" color="primary" flat />
-              </div>
+          <q-popup-proxy transition-show="scale" transition-hide="scale" ref="popEndDate">
+            <q-date
+              v-model="params.endDate"
+              mask="YYYY-MM-DD"
+              @update:model-value="closeDateDialog('end')"
+            >
             </q-date>
           </q-popup-proxy>
           <template v-slot:prepend>
@@ -76,6 +77,7 @@
         :columns="columns"
         :rows="rows"
         :pagination="{ rowsPerPage: 10 }"
+        no-data-label="暂无数据"
         row-key="name"
         class="no-box-shadow"
       >
@@ -153,6 +155,8 @@ export default {
     const dialogVisible = ref(false)
     const selectedLog = ref(null)
     const module = ref(null)
+    const dateLocale =
+      "{days: ['0', '1', '2', '3','4','5','6'],daysShort: ['0', '1', '2', '3','4','5','6']}"
     const pages = ref(0)
     const params = ref({
       page: 1
@@ -211,11 +215,6 @@ export default {
       dialogVisible.value = false
     }
 
-    const goPop = () => {
-      alert(901)
-      //$refs.popStartDate.hide()
-    }
-
     const searchLogs = () => {
       params.value.page = 1
       search()
@@ -267,12 +266,16 @@ export default {
       matSkipNext,
       matFastRewind,
       matFastForward,
-      goPop
+      dateLocale
     }
   },
   methods: {
-    closeDateDialog() {
-      this.$refs.popStartDate.hide()
+    closeDateDialog(type) {
+      if (type == 'start') {
+        this.$refs.popStartDate.hide()
+      } else {
+        this.$refs.popEndDate.hide()
+      }
       this.searchLogs()
     }
   }
