@@ -35,10 +35,19 @@
               clearable
               v-model="form.phone"
               :rules="rules.phone"
-              lazy-rules
               type="tel"
               label="手机号码"
               hint="请输入手机号码"
+            />
+            <q-input
+              outlined
+              dense
+              clearable
+              v-model="form.email"
+              :rules="rules.email"
+              type="email"
+              label="邮箱地址"
+              hint="请输入邮箱地址"
             />
             <q-input
               v-if="!form.id"
@@ -121,7 +130,7 @@
 
 <script>
 import { matVisibility, matVisibilityOff } from '@quasar/extras/material-icons'
-import { passwordRegex, phoneRegex } from '@/util/regex.js'
+import { passwordRegex, phoneRegex, emailRegex } from '@/util/regex.js'
 import { roleApi, userApi } from '@/api/user.js'
 import { departmentApi } from '@/api/department.js'
 import { useQuasar } from 'quasar'
@@ -161,11 +170,69 @@ export default {
       ],
       username: [
         (val) => (val && val.length > 0) || '请填写用户名',
-        (val) => val.length < 15 || '用户名长度过长'
+        (val) => val.length < 15 || '用户名长度过长',
+        (val) => {
+          return new Promise((resolve, reject) => {
+            setTimeout(() => {
+              let params = {
+                type: 'username',
+                id: state.form.id,
+                value: val
+              }
+              userApi.check({ params: params }).then((res) => {
+                if (res.data) {
+                  resolve(true)
+                } else {
+                  resolve('用户名重复，不可用')
+                }
+              })
+            }, 350)
+          })
+        }
       ],
       phone: [
         (val) => (val && val.length > 0) || '请填写手机号',
-        (val) => phoneRegex(val) || '手机号格式错误'
+        (val) => phoneRegex(val) || '手机号格式错误',
+        (val) => {
+          return new Promise((resolve, reject) => {
+            setTimeout(() => {
+              let params = {
+                type: 'phone',
+                id: state.form.id,
+                value: val
+              }
+              userApi.check({ params: params }).then((res) => {
+                if (res.data) {
+                  resolve(true)
+                } else {
+                  resolve('手机号重复，不可用')
+                }
+              })
+            }, 350)
+          })
+        }
+      ],
+      email: [
+        (val) => (val && val.length > 0) || '请填写邮箱',
+        (val) => emailRegex(val) || '邮箱格式错误',
+        (val) => {
+          return new Promise((resolve, reject) => {
+            setTimeout(() => {
+              let params = {
+                type: 'email',
+                id: state.form.id,
+                value: val
+              }
+              userApi.check({ params: params }).then((res) => {
+                if (res.data) {
+                  resolve(true)
+                } else {
+                  resolve('邮箱重复，不可用')
+                }
+              })
+            }, 350)
+          })
+        }
       ],
       password: [
         (val) => (val && val.length > 0) || '请填写密码',
@@ -183,7 +250,7 @@ export default {
     ]
     const onSubmit = () => {
       let promise = null
-      state.form.roles = state.form.roles.map((item) => ({ id: item }))
+      state.form.roles = state.form.roles.map((item) => roles.value.find((role) => role.id == item))
       state.form.department = departments.value.find((item) => item.id == state.form.departmentId)
       if (state.form.id) {
         promise = userApi.update(state.form)
