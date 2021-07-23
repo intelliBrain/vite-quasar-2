@@ -259,11 +259,19 @@ export default {
         promise = userApi.create(state.form)
       }
       promise.then((res) => {
-        $q.notify({
-          type: 'positive',
-          message: state.form.id ? '修改人员成功' : '新建人员成功'
-        })
-        context.emit('confirm', res.data, state.form.department)
+        if (res.status == 'success') {
+          $q.notify({
+            type: 'positive',
+            message: state.form.id ? '修改人员成功' : '新建人员成功'
+          })
+          context.emit('confirm', res.data, state.form.department)
+        } else {
+          $q.notify({
+            type: 'warning',
+            message: '操作失败'
+          })
+          context.emit('close')
+        }
       })
     }
     const onReset = () => {

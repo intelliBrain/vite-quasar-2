@@ -103,6 +103,7 @@
       </UserDialog>
       <PasswordResetDialog
         v-if="passwordDialog"
+        :user="user"
         @confirm="onPasswordConfirm"
         @close="onPasswordClose"
       ></PasswordResetDialog>
@@ -114,7 +115,7 @@
 import { toRefs, onMounted, watch, ref, reactive } from 'vue'
 import { userApi } from '@/api/user.js'
 import UserDialog from '@/components/authority/UserDialog.vue'
-import PasswordResetDialog from '@/components/authority/user/PasswordResetDialog.vue'
+import PasswordResetDialog from '@/components/authority/PasswordResetDialog.vue'
 export default {
   components: { UserDialog, PasswordResetDialog },
   props: {
@@ -179,6 +180,7 @@ export default {
     }
     const resetPassword = (item) => {
       passwordDialog.value = true
+      user.value = item
       console.log(item)
     }
     const onConfirm = (savedUser, dep) => {
