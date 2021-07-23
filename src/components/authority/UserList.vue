@@ -90,6 +90,14 @@
         </template>
       </q-table>
     </div>
+    <div class="footer float-right mr-md mt-md">
+      <q-pagination
+        v-model="params.page"
+        :max="pages"
+        direction-links
+        @update:model-value="pageChanged"
+      />
+    </div>
     <div>
       <UserDialog v-if="userDialog" :user="user" @confirm="onConfirm" @close="onClose">
       </UserDialog>
@@ -118,7 +126,7 @@ export default {
   setup(props, context) {
     const { department } = toRefs(props)
     const state = reactive({
-      params: { departmentId: '', enabled: '', keyword: '' }
+      params: { departmentId: '', enabled: '', keyword: '', page: 1 }
     })
     const statusOptions = [
       { label: '离职', value: false },
@@ -138,16 +146,23 @@ export default {
       { name: 'operating', label: '操作', field: 'operating' }
     ]
     const userList = ref([])
+    const pages = ref(1)
     const searchUsers = () => {
       state.params.departmentId =
         department.value.id == '1' || !department.value.id ? '' : department.value.id
       userApi.list(state.params).then((res) => {
+        pages.value = res.data.pages
         userList.value = res.data.records
       })
     }
     const filterChanged = () => {
+      state.params.page = 1
       searchUsers()
     }
+    const pageChanged = () => {
+      searchUsers()
+    }
+
     //人员修改开始
     const user = ref({})
     const userDialog = ref(false)
@@ -198,7 +213,9 @@ export default {
     return {
       columns,
       userList,
+      pages,
       searchUsers,
+      pageChanged,
       filterChanged,
       //人员修改开始
       user,
