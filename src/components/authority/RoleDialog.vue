@@ -68,13 +68,12 @@ export default {
         (val) => {
           return new Promise((resolve, reject) => {
             setTimeout(() => {
-              roleApi.findByName(val).then((res) => {
-                let data = res.data
-                if (data && data.id != state.form.id) {
-                  resolve('角色名称重复，不可用')
-                } else {
-                  resolve(true)
-                }
+              let params = {
+                id: state.form.id,
+                name: val
+              }
+              roleApi.checkName({ params: params }).then((res) => {
+                res.data ? resolve(true) : resolve('角色名称重复，不可用')
               })
             }, 350)
           })

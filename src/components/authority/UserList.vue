@@ -18,6 +18,7 @@
           label="请选择状态"
           option-value="value"
           option-label="label"
+          @update:model-value="filterChanged"
           emit-value
           map-options
         />
@@ -28,6 +29,7 @@
           class="w-220px"
           v-model="params.keyword"
           label="姓名或者账号"
+          @update:model-value="filterChanged"
         />
       </div>
     </div>
@@ -101,7 +103,7 @@
 </template>
 
 <script>
-import { toRefs, onMounted, watch, ref, reactive, watchEffect } from 'vue'
+import { toRefs, onMounted, watch, ref, reactive } from 'vue'
 import { userApi } from '@/api/user.js'
 import UserDialog from '@/components/authority/UserDialog.vue'
 import PasswordResetDialog from '@/components/authority/user/PasswordResetDialog.vue'
@@ -137,10 +139,14 @@ export default {
     ]
     const userList = ref([])
     const searchUsers = () => {
-      state.params.departmentId = department.value.id == '1' ? '' : department.value.id
+      state.params.departmentId =
+        department.value.id == '1' || !department.value.id ? '' : department.value.id
       userApi.list(state.params).then((res) => {
         userList.value = res.data.records
       })
+    }
+    const filterChanged = () => {
+      searchUsers()
     }
     //人员修改开始
     const user = ref({})
@@ -186,13 +192,14 @@ export default {
     onMounted(() => {
       searchUsers()
     })
-    watch([state, department], (newValue, oldValue) => {
+    watch(department, (newValue, oldValue) => {
       searchUsers()
     })
     return {
       columns,
       userList,
       searchUsers,
+      filterChanged,
       //人员修改开始
       user,
       userDialog,

@@ -57,15 +57,13 @@ export default {
         (val) => val.length < 20 || '部门名称长度过长',
         (val) => {
           return new Promise((resolve, reject) => {
-            let dep = null
             setTimeout(() => {
-              departmentApi.findByName(val).then((res) => {
-                dep = res.data
-                if (dep && dep.id != state.form.id) {
-                  resolve('部门名称重复，不可用')
-                } else {
-                  resolve(true)
-                }
+              let params = {
+                id: state.form.id,
+                name: val
+              }
+              departmentApi.checkName({ params: params }).then((res) => {
+                res.data ? resolve(true) : resolve('部门名称重复，不可用')
               })
             }, 350)
           })

@@ -27,5 +27,5 @@ export const roleApi = {
   list: () => api.get('/api/roles'),
   create: (obj) => api.post('/api/roles', obj),
   update: (obj) => api.put('/api/roles', obj),
-  findByName: (name) => api.get(`/api/roles/name/${name}`)
+  checkName: (params) => api.get('/api/roles/check', params)
 }
