@@ -185,7 +185,14 @@ export default {
       let index = userList.value.findIndex((item) => item.id == user.value.id)
       if (dep.id == department.value.id || department.value.id == '1' || !department.value.id) {
         if (user.value.id) {
-          userList.value.splice(index, 1, savedUser)
+          if (
+            user.value.enabled != state.params.enabled ||
+            user.value.name != state.params.keyword
+          ) {
+            userList.value.splice(index, 1)
+          } else {
+            userList.value.splice(index, 1, savedUser)
+          }
         } else {
           userList.value.push(savedUser)
         }

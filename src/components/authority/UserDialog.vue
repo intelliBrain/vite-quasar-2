@@ -28,6 +28,7 @@
               :rules="rules.username"
               label="账号"
               hint="请输入账号"
+              :disable="!!form.id"
             />
             <q-input
               outlined
