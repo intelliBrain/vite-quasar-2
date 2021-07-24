@@ -198,7 +198,11 @@ export default {
             userList.value.splice(index, 1, savedUser)
           }
         } else {
-          userList.value.push(savedUser)
+          if (userList.value.length == 10) {
+            userList.value.pop()
+          }
+          countUser.value++
+          userList.value.unshift(savedUser)
         }
       } else if (dep.id != department.value.id) {
         userList.value.splice(index, 1)
