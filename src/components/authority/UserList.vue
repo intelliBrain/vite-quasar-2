@@ -2,7 +2,7 @@
   <div>
     <div class="row my-lg">
       <icon-mdi-account class="q-mr-sm text-h6" />
-      <span class="text-subtitle2">全部人员({{ userList.length }}人)</span>
+      <span class="text-subtitle2">全部人员({{ countUser }}人)</span>
     </div>
 
     <div class="bg-grey-2 q-py-md q-px-md">
@@ -148,12 +148,14 @@ export default {
     ]
     const userList = ref([])
     const pages = ref(1)
+    const countUser = ref(0)
     const searchUsers = () => {
       state.params.departmentId =
         department.value.id == '1' || !department.value.id ? '' : department.value.id
       userApi.list(state.params).then((res) => {
         pages.value = res.data.pages
         userList.value = res.data.records
+        countUser.value = res.data.total
       })
     }
     const filterChanged = () => {
@@ -223,6 +225,7 @@ export default {
       columns,
       userList,
       pages,
+      countUser,
       searchUsers,
       pageChanged,
       filterChanged,
