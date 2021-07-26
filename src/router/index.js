@@ -32,7 +32,6 @@ import generatedRoutes from 'virtual:generated-pages'
 // ]
 
 const routes = setupLayouts(generatedRoutes)
-console.log(routes)
 const router = createRouter({
   history: createWebHistory(),
   routes
@@ -54,7 +53,7 @@ router.beforeEach((to, from, next) => {
   if (to.name === 'Logout') {
     LocalStorage.remove('lastUrl')
     LocalStorage.remove('User/accessToken')
-    next({ name: 'login', params: { msgType: 'fromLogout' } })
+    next({ name: 'login', params: { msgType: 'login' } })
     return
   }
 

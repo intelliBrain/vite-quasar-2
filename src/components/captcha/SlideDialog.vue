@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import SlideVerify from 'src/components/SlideVerify.vue'
+import SlideVerify from '@/components/captcha/SlideVerify.vue'
 import { defineComponent, ref } from 'vue'
 import { encrypt } from 'src/util/crypto.js'
 import { useRoute } from 'vue-router'

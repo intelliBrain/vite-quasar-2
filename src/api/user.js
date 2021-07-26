@@ -14,7 +14,10 @@ export const userApi = {
   currentUser: () => api.get('/api/users/current'),
   search: (params) => api.post('/api/users/search', params),
   create: (params) => api.post('/api/users', params),
-  update: (params) => api.put('/api/users', params)
+  update: (params) => api.put('/api/users', params),
+  list: (filter) => api.post('/api/users/list', filter),
+  check: (params) => api.get('/api/users/check', params),
+  resetPassword: (params) => api.get('/api/users/password', params)
 }
 
 export const captchaApi = {
@@ -25,5 +28,5 @@ export const roleApi = {
   list: () => api.get('/api/roles'),
   create: (obj) => api.post('/api/roles', obj),
   update: (obj) => api.put('/api/roles', obj),
-  findByName: (name) => api.get(`/api/roles/name/${name}`)
+  checkName: (params) => api.get('/api/roles/check', params)
 }

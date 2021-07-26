@@ -8,11 +8,11 @@ import { quasarConfig } from 'src/plugins/quasar.js'
 import 'virtual:windi-devtools'
 import 'virtual:windi.css'
 
+// register vue composition api globally
+import 'vue-global-api'
+
 import 'src/styles/index.scss'
 import router from './router'
 import store from './store'
-
-// register vue composition api globally
-import 'vue-global-api'
 
 createApp(App).use(Quasar, quasarConfig).use(router).use(store).mount('#app')

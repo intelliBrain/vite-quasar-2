@@ -12,17 +12,13 @@
               label="角色名称"
               hint="角色名称"
               lazy-rules
-              :rules="[
-                (val) => (val && val.length > 0) || '请填写角色名称',
-                (val) => val.length < 20 || '部门角色长度过长',
-                checkName
-              ]"
+              :rules="rules.name"
             />
             <q-field
               borderless
               label="权限"
               :model-value="form.privileges"
-              :rules="[(val) => val.length || '至少选择一个权限']"
+              :rules="rules.privileges"
               stack-label
             >
               <q-option-group
@@ -65,6 +61,26 @@ export default {
       form: {}
     })
     const show = ref(true)
+    const rules = ref({
+      name: [
+        (val) => (val && val.length > 0) || '请填写角色名称',
+        (val) => val.length < 20 || '部门角色长度过长',
+        (val) => {
+          return new Promise((resolve, reject) => {
+            setTimeout(() => {
+              let params = {
+                id: state.form.id,
+                name: val
+              }
+              roleApi.checkName({ params: params }).then((res) => {
+                res.data ? resolve(true) : resolve('角色名称重复，不可用')
+              })
+            }, 350)
+          })
+        }
+      ],
+      privileges: [(val) => val.length || '至少选择一个权限']
+    })
     const onSubmit = () => {
       state.form.privileges = state.form.privileges.map((item) => ({ code: item }))
       let promise = null
@@ -74,11 +90,19 @@ export default {
         promise = roleApi.create(state.form)
       }
       promise.then((res) => {
-        $q.notify({
-          type: 'positive',
-          message: state.form.id ? '修改角色成功' : '新建角色成功'
-        })
-        context.emit('confirm', res.data)
+        if (res.status == 'success') {
+          $q.notify({
+            type: 'positive',
+            message: state.form.id ? '修改角色成功' : '新建角色成功'
+          })
+          context.emit('confirm', res.data)
+        } else {
+          $q.notify({
+            type: 'warning',
+            message: '操作失败'
+          })
+          context.emit('close')
+        }
       })
     }
     const onReset = () => {
@@ -86,20 +110,6 @@ export default {
     }
     const deleteRole = () => {
       console.log('todo delete')
-    }
-    const checkName = (val) => {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          roleApi.findByName(val).then((res) => {
-            let data = res.data
-            if (data && data.id != state.form.id) {
-              resolve('角色名称重复，不可用')
-            } else {
-              resolve(true)
-            }
-          })
-        }, 350)
-      })
     }
     const privileges = ref([
       { value: 'user', label: '用户管理' },
@@ -112,7 +122,7 @@ export default {
     })
     return {
       ...toRefs(state),
-      checkName,
+      rules,
       show,
       onSubmit,
       deleteRole,
