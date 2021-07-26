@@ -155,8 +155,7 @@ export default {
     const dialogVisible = ref(false)
     const selectedLog = ref(null)
     const module = ref(null)
-    const dateLocale =
-      "{days: ['0', '1', '2', '3','4','5','6'],daysShort: ['0', '1', '2', '3','4','5','6']}"
+    const dateLocale = {}
     const pages = ref(0)
     const params = ref({
       page: 1
