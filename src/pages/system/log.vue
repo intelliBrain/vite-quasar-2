@@ -228,7 +228,7 @@ export default {
 
       logApi.search(filter).then((res) => {
         rows.value = res.data.records.map((log) => {
-          log.module = logModules[log.module.toUpperCase()]
+          log.module = logModules[log.module]
           log.operate = logOperates[log.operate]
           if (log.createdBy) {
             log.name = log.createdBy.nickname || log.createdBy.username
