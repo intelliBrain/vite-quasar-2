@@ -13,7 +13,7 @@
             <q-date
               v-model="params.startDate"
               mask="YYYY-MM-DD"
-              @update:model-value="closeDateDialog('start')"
+              @update:model-value="hideDatePicker('start')"
             >
             </q-date>
           </q-popup-proxy>
@@ -26,7 +26,7 @@
             <q-date
               v-model="params.endDate"
               mask="YYYY-MM-DD"
-              @update:model-value="closeDateDialog('end')"
+              @update:model-value="hideDatePicker('end')"
             >
             </q-date>
           </q-popup-proxy>
@@ -127,15 +127,15 @@
     </div>
 
     <div>
-      <log-dialog :item="selectedLog" v-if="dialogVisible" @close="onClose" />
+      <log-dialog :item="selectedLog" v-if="dialogVisible" @close="closeLogDialog" />
     </div>
   </q-page>
 </template>
 
 <script>
 import { ref, onMounted } from 'vue'
-import { systemApi } from '@/api/system.js'
-import dict from '@/util/dict.js'
+import { logApi } from '@/api/system.js'
+import { logModules, logOperates } from '@/util/dict.js'
 import LogDialog from '@/components/system/LogDialog.vue'
 import {
   matClose,
@@ -162,10 +162,10 @@ export default {
     })
 
     const moduleList = []
-    Object.keys(dict.logModules).forEach((k) => {
+    Object.keys(logModules).forEach((key) => {
       let item = {}
-      item['value'] = k
-      item['label'] = dict.logModules[k]
+      item['value'] = key
+      item['label'] = logModules[key]
       moduleList.push(item)
     })
     const modules = ref(moduleList)
@@ -210,7 +210,7 @@ export default {
       dialogVisible.value = true
     }
 
-    const onClose = () => {
+    const closeLogDialog = () => {
       dialogVisible.value = false
     }
 
@@ -226,14 +226,14 @@ export default {
         filter.module = m.value
       }
 
-      systemApi.search(filter).then((res) => {
+      logApi.search(filter).then((res) => {
         rows.value = res.data.records.map((log) => {
-          log.module = dict.logModules[log.module.toUpperCase()]
-          log.operate = dict.logOperates[log.operate]
-          if (log.createdBy.nickname) {
-            log.name = log.createdBy.nickname
+          log.module = logModules[log.module.toUpperCase()]
+          log.operate = logOperates[log.operate]
+          if (log.createdBy) {
+            log.name = log.createdBy.nickname || log.createdBy.username
           } else {
-            log.name = log.createdBy.username
+            log.name = '--'
           }
           return log
         })
@@ -252,7 +252,7 @@ export default {
       module,
       dialogVisible,
       viewDetail,
-      onClose,
+      closeLogDialog,
       selectedLog,
       pages,
       params,
@@ -269,7 +269,7 @@ export default {
     }
   },
   methods: {
-    closeDateDialog(type) {
+    hideDatePicker(type) {
       if (type == 'start') {
         this.$refs.popStartDate.hide()
       } else {

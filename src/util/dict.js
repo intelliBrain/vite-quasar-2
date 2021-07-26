@@ -1,4 +1,4 @@
-const logModules = {
+export const logModules = {
   CATEGORY: '内容栏目',
   TAG: '栏目标签',
   LINE: '路线',
@@ -22,7 +22,7 @@ const logModules = {
   MESSAGE: '乘客留言'
 }
 
-const logOperates = {
+export const logOperates = {
   CREATE: '新增',
   UPDATE: '更新',
   DELETE: '删除',
@@ -36,8 +36,4 @@ const logOperates = {
   SYNC_WECHAT: '同步微信',
   SYNC_WEIBO: '同步微博',
   LOGIN: '登录'
-}
-export default {
-  logModules,
-  logOperates
 }

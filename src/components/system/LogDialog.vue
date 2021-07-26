@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-model="fixed">
+  <q-dialog v-model="qDialogVisible">
     <q-card style="width: 55%; height: 70%">
       <q-card-section>
         <div class="text-h6">查看</div>
@@ -14,7 +14,7 @@
       <q-separator />
 
       <q-card-actions align="right">
-        <q-btn flat label="关闭" color="primary" @click="close" />
+        <q-btn flat label="关闭" color="primary" @click="closeQDialog" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -35,11 +35,11 @@ export default {
     }
   },
   setup(props, context) {
-    const fixed = ref(true)
+    const qDialogVisible = ref(true)
     const jsonData = ref(null)
     const { item } = toRefs(props)
 
-    const close = () => {
+    const closeQDialog = () => {
       context.emit('close')
     }
 
@@ -48,9 +48,9 @@ export default {
     })
 
     return {
-      fixed,
+      qDialogVisible,
       jsonData,
-      close
+      closeQDialog
     }
   }
 }
