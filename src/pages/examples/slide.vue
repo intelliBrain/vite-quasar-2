@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import SlideVerify from '@/components/catpcha/SlideVerify.vue'
+import SlideVerify from '@/components/captcha/SlideVerify.vue'
 import { ref } from 'vue'
 export default {
   components: {
