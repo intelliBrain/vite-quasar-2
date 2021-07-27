@@ -19,7 +19,7 @@ export default defineConfig({
       // generate `components.d.ts` for ts support with Volar
       globalComponentsDeclaration: true,
       // / Allow subdirectories as namespace prefix for components.
-      directoryAsNamespace: true,
+      directoryAsNamespace: false,
       // auto import icons
       customComponentResolvers: [
         ViteIconsResolver({

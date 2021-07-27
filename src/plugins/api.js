@@ -13,7 +13,7 @@ const parseError = (result) => {
         name: 'login',
         params: { redirect: router.currentRoute.fullPath }
       })
-    }, 1000)
+    }, 350)
   } else {
     Notify.create({
       type: 'warning',
@@ -52,12 +52,9 @@ const refreshAccessToken = () => {
           expiresAt: data.refreshToken.expiresAt,
           tokenValue: data.refreshToken.tokenValue
         })
-        console.log(53, response)
       }
     })
-    .catch((err) => {
-      console.log(56, err.response)
-    })
+    .catch((err) => ({}))
 }
 const api = axios.create({})
 
