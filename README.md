@@ -102,3 +102,12 @@ export default {
 }
 ```
 
+## remove experimental status of <script setup>
+https://github.com/vuejs/rfcs/blob/sfc-improvements/active-rfcs/0000-sfc-script-setup.md
+https://github.com/vuejs/rfcs/blob/master/active-rfcs/0040-script-setup.md
+
+
+
+##  jwt refresh token
+//https://metamind.readme.io/docs/generate-an-oauth-token-using-a-refresh-token
+//https://thedutchlab.com/blog/using-axios-interceptors-for-refreshing-your-api-token
