@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <q-form @submit="onSubmit" @reset="onReset">
+    <q-form>
       <div class="row q-pa-md">
         <q-input
           outlined
@@ -12,7 +12,10 @@
           <q-popup-proxy transition-show="scale" transition-hide="scale" ref="popStartDate">
             <q-date
               v-model="params.startDate"
+              minimal
+              first-day-of-week="0"
               mask="YYYY-MM-DD"
+              :locale="dateLocale"
               @update:model-value="hideDatePicker('start')"
             >
             </q-date>
@@ -25,7 +28,11 @@
           <q-popup-proxy transition-show="scale" transition-hide="scale" ref="popEndDate">
             <q-date
               v-model="params.endDate"
+              minimal
+              first-day-of-week="0"
               mask="YYYY-MM-DD"
+              :locale="dateLocale"
+              :options="checkDateRange"
               @update:model-value="hideDatePicker('end')"
             >
             </q-date>
@@ -81,6 +88,13 @@
         row-key="name"
         class="no-box-shadow"
       >
+        <template v-slot:header="props">
+          <q-tr :props="props">
+            <q-th v-for="col in props.cols" :key="col.name" :props="props" style="font-weight: 700">
+              {{ col.label }}
+            </q-th>
+          </q-tr>
+        </template>
         <template v-slot:body="props">
           <q-tr :props="props">
             <q-td key="name" :props="props">
@@ -155,7 +169,38 @@ export default {
     const dialogVisible = ref(false)
     const selectedLog = ref(null)
     const module = ref(null)
-    const dateLocale = {}
+    const dateLocale = {
+      days: ['日', '一', '二', '三', '四', '五', '六'],
+      daysShort: ['日', '一', '二', '三', '四', '五', '六'],
+      months: [
+        '一月',
+        '二月',
+        '三月',
+        '四月',
+        '五月',
+        '六月',
+        '七月',
+        '八月',
+        '九月',
+        '十月',
+        '十一月',
+        '十二月'
+      ],
+      monthsShort: [
+        '一月',
+        '二月',
+        '三月',
+        '四月',
+        '五月',
+        '六月',
+        '七月',
+        '八月',
+        '九月',
+        '十月',
+        '十一月',
+        '十二月'
+      ]
+    }
     const pages = ref(0)
     const params = ref({
       page: 1
@@ -204,6 +249,14 @@ export default {
     ]
 
     const rows = ref([])
+
+    const checkDateRange = (date) => {
+      let filter = params.value
+      if (filter.startDate) {
+        return date >= filter.startDate.replace(/-/gi, '/')
+      }
+      return true
+    }
 
     const viewDetail = (item) => {
       selectedLog.value = item
@@ -265,7 +318,8 @@ export default {
       matSkipNext,
       matFastRewind,
       matFastForward,
-      dateLocale
+      dateLocale,
+      checkDateRange
     }
   },
   methods: {
