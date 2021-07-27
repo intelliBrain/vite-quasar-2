@@ -130,8 +130,8 @@ export default {
       params: { departmentId: '', enabled: '', keyword: '', page: 1 }
     })
     const statusOptions = [
-      { label: '离职', value: false },
-      { label: '在职', value: true }
+      { label: '离职', value: 'false' },
+      { label: '在职', value: 'true' }
     ]
 
     const columns = [
@@ -187,17 +187,20 @@ export default {
     }
     const onConfirm = (savedUser, dep) => {
       let index = userList.value.findIndex((item) => item.id == user.value.id)
+      //修改人员部门未改变或者部门是公司
       if (dep.id == department.value.id || department.value.id == '1' || !department.value.id) {
         if (user.value.id) {
           if (
-            user.value.enabled != state.params.enabled ||
-            user.value.name != state.params.keyword
+            (!!state.params.enabled && savedUser.enabled != state.params.enabled) ||
+            (!!state.params.keyword && savedUser.name != state.params.keyword)
           ) {
+            countUser.value--
             userList.value.splice(index, 1)
           } else {
             userList.value.splice(index, 1, savedUser)
           }
         } else {
+          //添加时列表数据为10，先移除最后1条数据
           if (userList.value.length == 10) {
             userList.value.pop()
           }
@@ -206,6 +209,7 @@ export default {
         }
       } else if (dep.id != department.value.id) {
         userList.value.splice(index, 1)
+        countUser.value--
       }
       userDialog.value = false
     }
