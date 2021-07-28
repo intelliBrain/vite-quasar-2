@@ -4,41 +4,47 @@
       <div class="row q-pa-md">
         <q-input
           outlined
-          v-model="params.startDate"
+          v-model="startDate"
           label="操作时间（始）"
           class="p-sm flex-1"
           dense
+          clearable
+          @update:model-value="searchLogs"
         >
           <q-popup-proxy transition-show="scale" transition-hide="scale" ref="popStartDate">
             <q-date
-              v-model="params.startDate"
-              minimal
-              first-day-of-week="0"
+              v-model="startDate"
               mask="YYYY-MM-DD"
-              :locale="dateLocale"
+              minimal
               @update:model-value="hideDatePicker('start')"
             >
             </q-date>
           </q-popup-proxy>
           <template v-slot:prepend>
-            <q-icon :name="matEvent" class="cursor-pointer"> </q-icon>
+            <q-icon name="eva-calendar-outline" class="cursor-pointer"> </q-icon>
           </template>
         </q-input>
-        <q-input outlined v-model="params.endDate" label="操作时间（终）" class="p-sm flex-1" dense>
+        <q-input
+          outlined
+          v-model="endDate"
+          label="操作时间（终）"
+          class="p-sm flex-1"
+          dense
+          clearable
+          @update:model-value="searchLogs"
+        >
           <q-popup-proxy transition-show="scale" transition-hide="scale" ref="popEndDate">
             <q-date
-              v-model="params.endDate"
-              minimal
-              first-day-of-week="0"
+              v-model="endDate"
               mask="YYYY-MM-DD"
-              :locale="dateLocale"
+              minimal
               :options="checkDateRange"
               @update:model-value="hideDatePicker('end')"
             >
             </q-date>
           </q-popup-proxy>
           <template v-slot:prepend>
-            <q-icon :name="matEvent" class="cursor-pointer"> </q-icon>
+            <q-icon name="eva-calendar-outline" class="cursor-pointer"> </q-icon>
           </template>
         </q-input>
         <q-select
@@ -48,6 +54,7 @@
           label="模块"
           class="p-sm flex-1"
           dense
+          clearable
           @update:model-value="searchLogs"
         />
         <q-input
@@ -57,10 +64,11 @@
           label="消息"
           class="p-sm flex-1"
           dense
+          clearable
           @update:model-value="searchLogs"
         >
           <template v-slot:prepend>
-            <q-icon :name="matSearch" />
+            <q-icon name="eva-search" />
           </template>
         </q-input>
         <q-input
@@ -70,10 +78,11 @@
           label="姓名或者账号"
           class="p-sm flex-1"
           dense
+          clearable
           @update:model-value="searchLogs"
         >
           <template v-slot:prepend>
-            <q-icon :name="matSearch" />
+            <q-icon name="eva-search" />
           </template>
         </q-input>
       </div>
@@ -123,15 +132,8 @@
               <q-pagination
                 v-model="params.page"
                 :max="pages"
-                :max-pages="10"
                 direction-links
-                boundary-links
-                :icon-first="matSkipPrevious"
-                :icon-last="matSkipNext"
-                :icon-prev="matFastRewind"
-                :icon-next="matFastForward"
-                dense
-                @click="search"
+                @update:model-value="search"
               />
             </div>
           </div>
@@ -151,16 +153,6 @@ import { ref, onMounted } from 'vue'
 import { logApi } from '@/api/system.js'
 import { logModules, logOperates } from '@/util/dict.js'
 import LogDialog from '@/components/system/LogDialog.vue'
-import {
-  matClose,
-  matEvent,
-  matSearch,
-  matSkipPrevious,
-  matSkipNext,
-  matFastRewind,
-  matFastForward
-} from '@quasar/extras/material-icons'
-
 export default {
   components: {
     LogDialog
@@ -169,38 +161,8 @@ export default {
     const dialogVisible = ref(false)
     const selectedLog = ref(null)
     const module = ref(null)
-    const dateLocale = {
-      days: ['日', '一', '二', '三', '四', '五', '六'],
-      daysShort: ['日', '一', '二', '三', '四', '五', '六'],
-      months: [
-        '一月',
-        '二月',
-        '三月',
-        '四月',
-        '五月',
-        '六月',
-        '七月',
-        '八月',
-        '九月',
-        '十月',
-        '十一月',
-        '十二月'
-      ],
-      monthsShort: [
-        '一月',
-        '二月',
-        '三月',
-        '四月',
-        '五月',
-        '六月',
-        '七月',
-        '八月',
-        '九月',
-        '十月',
-        '十一月',
-        '十二月'
-      ]
-    }
+    const startDate = ref(null)
+    const endDate = ref(null)
     const pages = ref(0)
     const params = ref({
       page: 1
@@ -251,9 +213,8 @@ export default {
     const rows = ref([])
 
     const checkDateRange = (date) => {
-      let filter = params.value
-      if (filter.startDate) {
-        return date >= filter.startDate.replace(/-/gi, '/')
+      if (startDate.value) {
+        return date >= startDate.value.replace(/-/gi, '/')
       }
       return true
     }
@@ -277,6 +238,20 @@ export default {
       if (module.value) {
         let m = module.value
         filter.module = m.value
+      } else {
+        filter.module = null
+      }
+
+      if (startDate.value) {
+        filter.startDate = startDate.value + ' 00:00:00'
+      } else {
+        filter.startDate = null
+      }
+
+      if (endDate.value) {
+        filter.endDate = endDate.value + ' 23:59:59'
+      } else {
+        filter.endDate = null
       }
 
       logApi.search(filter).then((res) => {
@@ -311,15 +286,9 @@ export default {
       params,
       search,
       searchLogs,
-      matClose,
-      matEvent,
-      matSearch,
-      matSkipPrevious,
-      matSkipNext,
-      matFastRewind,
-      matFastForward,
-      dateLocale,
-      checkDateRange
+      checkDateRange,
+      startDate,
+      endDate
     }
   },
   methods: {

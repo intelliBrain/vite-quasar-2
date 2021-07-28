@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-dialog v-model="prompt" persistent>
+    <q-dialog v-model="show" persistent>
       <q-card style="min-width: 350px">
         <q-card-section>
           <div class="text-h6">部门管理</div>
@@ -15,11 +15,7 @@
               label="部门名称"
               hint="部门名称"
               lazy-rules
-              :rules="[
-                (val) => (val && val.length > 0) || '请填写部门名称',
-                (val) => val.length < 20 || '部门名称长度过长',
-                checkName
-              ]"
+              :rules="rules.name"
             />
             <div>
               <q-btn label="确认" type="submit" color="primary" />
@@ -47,52 +43,57 @@ export default {
       required: true
     }
   },
-  emits: ['update', 'create', 'close'],
+  emits: ['confirm', 'close'],
   setup(props, context) {
     const $q = useQuasar()
     const { department, parentDepartment } = toRefs(props)
-    const prompt = ref(true)
+    const show = ref(true)
     const state = reactive({
-      form: {
-        name: ''
-      }
+      form: {}
     })
-
-    const checkName = (val) => {
-      return new Promise((resolve, reject) => {
-        let dep = null
-        setTimeout(() => {
-          departmentApi.findByName(val).then((res) => {
-            dep = res.data
-            if (dep && dep.id != state.form.id) {
-              resolve('部门名称重复，不可用')
-            } else {
-              resolve(true)
-            }
+    const rules = ref({
+      name: [
+        (val) => (val && val.length > 0) || '请填写部门名称',
+        (val) => val.length < 20 || '部门名称长度过长',
+        (val) => {
+          return new Promise((resolve, reject) => {
+            setTimeout(() => {
+              let params = {
+                id: state.form.id,
+                name: val
+              }
+              departmentApi.checkName({ params: params }).then((res) => {
+                res.data ? resolve(true) : resolve('部门名称重复，不可用')
+              })
+            }, 350)
           })
-        }, 350)
-      })
-    }
+        }
+      ]
+    })
     const onSubmit = () => {
+      let promise = null
       if (state.form.id) {
-        departmentApi.update(state.form).then((res) => {
-          $q.notify({
-            type: 'positive',
-            message: '修改部门成功'
-          })
-          context.emit('update', res.data)
-        })
+        promise = departmentApi.update(state.form)
       } else {
         state.form.parentId = parentDepartment.value.id
         state.form.seq = '0'
-        departmentApi.create(state.form).then((res) => {
+        promise = departmentApi.create(state.form)
+      }
+      promise.then((res) => {
+        if (res.status == 'success') {
           $q.notify({
             type: 'positive',
-            message: '新建部门成功'
+            message: state.form.id ? '修改部门成功' : '新建部门成功'
           })
-          context.emit('create', res.data)
-        })
-      }
+          context.emit('confirm', res.data)
+        } else {
+          $q.notify({
+            type: 'warning',
+            message: '操作失败'
+          })
+          context.emit('close')
+        }
+      })
     }
     const onReset = () => {
       context.emit('close')
@@ -101,11 +102,11 @@ export default {
       state.form = JSON.parse(JSON.stringify(department.value))
     })
     return {
-      prompt,
+      show,
       ...toRefs(state),
+      rules,
       onSubmit,
-      onReset,
-      checkName
+      onReset
     }
   }
 }

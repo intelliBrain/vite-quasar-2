@@ -132,8 +132,7 @@ import { useQuasar } from 'quasar'
 import { ref, reactive, toRefs } from 'vue'
 import { userApi } from '@/api/user'
 import { useRouter } from 'vue-router'
-import { decrypt } from '@/util/crypto'
-import SlideDialog from 'src/components/SlideDialog.vue'
+import SlideDialog from '@/components/captcha/SlideDialog.vue'
 export default {
   components: {
     SlideDialog
@@ -158,23 +157,18 @@ export default {
       state.form = { username: '', password: '', rememberMe: false, captcha: null }
     }
     const onSlideFail = () => {
-      console.log(162)
       showSlideDialog.value = false
     }
     const onSlideVerify = (captcha) => {
-      console.log(captcha)
-      console.log(decrypt(captcha))
       showSlideDialog.value = false
       state.form.captcha = captcha
       userApi.login(qs.stringify(state.form)).then((res) => {
         if (res.code == 200) {
           const { accessToken, refreshToken } = res.data
-          console.log($q.localStorage)
           $q.localStorage.set('User/accessToken', {
             expiresAt: accessToken.expiresAt,
             tokenValue: accessToken.tokenValue
           })
-
           $q.localStorage.set('User/refreshToken', {
             expiresAt: refreshToken.expiresAt,
             tokenValue: refreshToken.tokenValue
@@ -183,7 +177,6 @@ export default {
             type: 'positive',
             message: 'Login Success'
           })
-          // console.log($store.getters['User/getAccessToken'])
           router.push({ path: '/' })
         }
       })

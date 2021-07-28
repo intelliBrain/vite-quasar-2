@@ -11,11 +11,11 @@
       <icon-ic-outline-favorite class="text-info text-h2" />
     </div>
 
-    <q-btn color="primary" :icon="matMail" label="On Left" />
-    <q-btn color="secondary" :icon-right="matMail" label="On Right"> </q-btn>
-    <q-btn color="red" :icon="matMail" :icon-right="matSend" label="On Left and Right" />
+    <q-btn color="primary" icon="eva-email" label="On Left" />
+    <q-btn color="secondary" icon-right="eva-email" label="On Right"> </q-btn>
+    <q-btn color="red" icon="eva-email" icon-right="eva-paper-plane" label="On Left and Right" />
     <br />
-    <q-btn :icon="matPhone" label="Stacked" stack glossy color="purple" />
+    <q-btn icon="eva-phone" label="Stacked" stack glossy color="purple" />
 
     <div>{prefix}-{collection}-{icon}</div>
 
@@ -35,15 +35,8 @@
 </template>
 
 <script>
-import { matMail, matSend, matPhone } from '@quasar/extras/material-icons'
 export default {
-  setup() {
-    return {
-      matMail,
-      matSend,
-      matPhone
-    }
-  }
+  setup() {}
 }
 </script>
 

@@ -1,39 +1,32 @@
 <template>
   <q-page class="q-pa-md column flex-center">
     <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
-    <q-btn label="hello" rounded size="md" />
+    <q-btn label="hello" rounded size="md" class="my-md" />
 
-    <q-icon name="event" size="md" />
+    <q-icon name="eva-calendar-outline" size="md" />
     <icon-mdi-notification-clear-all class="text-h6 text-weight-bold" />
     <router-link to="/about">About</router-link>
   </q-page>
 </template>
 
-<script>
+<script setup>
 // @ is an alias to /src
-import HelloWorld from 'src/components/HelloWorld.vue'
 import { userApi } from 'src/api/user'
+import { onMounted } from 'vue'
+import { useQuasar } from 'quasar'
 
-export default {
-  name: 'Home',
-  components: {
-    HelloWorld
-  },
-  setup() {
-    onMounted(() => {
-      getCms()
+onMounted(() => {
+  getUser()
+})
+
+const $q = useQuasar()
+const getUser = () => {
+  userApi.currentUser().then((res) => {
+    $q.notify({
+      type: 'positive',
+      message: `welcome ${res.data.username}`
     })
-    const state = reactive({ name: 'allen' })
-    console.log(state)
-    const getCms = () => {
-      userApi.currentUser().then((res) => {
-        console.log(res)
-      })
-    }
-    return {
-      getCms
-    }
-  }
+    console.log(res)
+  })
 }
 </script>
