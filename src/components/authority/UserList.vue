@@ -187,12 +187,11 @@ export default {
     }
     const onConfirm = (savedUser, dep) => {
       let index = userList.value.findIndex((item) => item.id == user.value.id)
-      console.log(index)
       if (!isQueryChanged(savedUser) && (dep.id == department.value.id || isRoot())) {
         /*
-        情况1：查询结果未改变
+        情况1：查询结果未改变 && 
         情况2：部门条件
-            2.1.部门未改变
+            2.1.部门未改变 ||
             2.2.当前部门为根部门
         操作: 进行插入或者修改
         */
@@ -204,9 +203,9 @@ export default {
         }
       } else if (index != '-1') {
         /*
-        情况1：结果和查询条件不一致
+        情况1：结果和查询条件不一致 ||
         情况2：部门改变且不是跟部门
-        操作: 直接移除
+        操作: 直接移除（如果为新增则不操作）
         */
         countUser.value--
         userList.value.splice(index, 1)
