@@ -35,12 +35,12 @@
               hint="请再次输入密码"
             >
               <template v-slot:append>
-                <q-icon
-                  type="text"
-                  :name="isPwdConfirm ? matVisibilityOff : matVisibility"
-                  @click="isPwdConfirm = !isPwdConfirm"
-                  class="cursor-pointer"
+                <icon-ic-round-visibility-off
+                  v-if="isPwd"
+                  class="text-lg"
+                  @click="isPwd = !isPwd"
                 />
+                <icon-ic-round-visibility v-else class="text-lg" @click="isPwd = !isPwd" />
               </template>
             </q-input>
             <div>
@@ -55,7 +55,6 @@
 </template>
 
 <script>
-import { matVisibility, matVisibilityOff } from '@quasar/extras/material-icons'
 import { passwordRegex } from '@/util/regex.js'
 import { userApi } from '@/api/user.js'
 import { useQuasar } from 'quasar'
@@ -116,9 +115,7 @@ export default {
       isPwdConfirm,
       show,
       onSubmit,
-      onReset,
-      matVisibility,
-      matVisibilityOff
+      onReset
     }
   }
 }

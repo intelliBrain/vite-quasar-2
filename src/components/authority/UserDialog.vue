@@ -62,12 +62,12 @@
               hint="请输入密码"
             >
               <template v-slot:append>
-                <q-icon
-                  type="text"
-                  :name="isPwd ? matVisibilityOff : matVisibility"
+                <icon-ic-round-visibility-off
+                  v-if="isPwd"
+                  class="text-lg"
                   @click="isPwd = !isPwd"
-                  class="cursor-pointer"
                 />
+                <icon-ic-round-visibility v-else class="text-lg" @click="isPwd = !isPwd" />
               </template>
             </q-input>
             <q-select
@@ -130,7 +130,6 @@
 </template>
 
 <script>
-import { matVisibility, matVisibilityOff } from '@quasar/extras/material-icons'
 import { passwordRegex, phoneRegex, emailRegex } from '@/util/regex.js'
 import { roleApi, userApi } from '@/api/user.js'
 import { departmentApi } from '@/api/department.js'
@@ -302,9 +301,7 @@ export default {
       onSubmit,
       onReset,
       rules,
-      isPwd,
-      matVisibility,
-      matVisibilityOff
+      isPwd
     }
   }
 }

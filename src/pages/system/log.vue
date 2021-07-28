@@ -18,7 +18,7 @@
             </q-date>
           </q-popup-proxy>
           <template v-slot:prepend>
-            <q-icon :name="matEvent" class="cursor-pointer"> </q-icon>
+            <q-icon name="eva-calendar-outline" class="cursor-pointer"> </q-icon>
           </template>
         </q-input>
         <q-input outlined v-model="params.endDate" label="操作时间（终）" class="p-sm flex-1" dense>
@@ -31,7 +31,7 @@
             </q-date>
           </q-popup-proxy>
           <template v-slot:prepend>
-            <q-icon :name="matEvent" class="cursor-pointer"> </q-icon>
+            <q-icon name="eva-calendar-outline" class="cursor-pointer"> </q-icon>
           </template>
         </q-input>
         <q-select
@@ -53,7 +53,7 @@
           @update:model-value="searchLogs"
         >
           <template v-slot:prepend>
-            <q-icon :name="matSearch" />
+            <q-icon name="eva-search" />
           </template>
         </q-input>
         <q-input
@@ -66,7 +66,7 @@
           @update:model-value="searchLogs"
         >
           <template v-slot:prepend>
-            <q-icon :name="matSearch" />
+            <q-icon name="eva-search" />
           </template>
         </q-input>
       </div>
@@ -109,15 +109,8 @@
               <q-pagination
                 v-model="params.page"
                 :max="pages"
-                :max-pages="10"
                 direction-links
-                boundary-links
-                :icon-first="matSkipPrevious"
-                :icon-last="matSkipNext"
-                :icon-prev="matFastRewind"
-                :icon-next="matFastForward"
-                dense
-                @click="search"
+                @update:model-value="search"
               />
             </div>
           </div>
@@ -137,16 +130,6 @@ import { ref, onMounted } from 'vue'
 import { logApi } from '@/api/system.js'
 import { logModules, logOperates } from '@/util/dict.js'
 import LogDialog from '@/components/system/LogDialog.vue'
-import {
-  matClose,
-  matEvent,
-  matSearch,
-  matSkipPrevious,
-  matSkipNext,
-  matFastRewind,
-  matFastForward
-} from '@quasar/extras/material-icons'
-
 export default {
   components: {
     LogDialog
@@ -258,13 +241,6 @@ export default {
       params,
       search,
       searchLogs,
-      matClose,
-      matEvent,
-      matSearch,
-      matSkipPrevious,
-      matSkipNext,
-      matFastRewind,
-      matFastForward,
       dateLocale
     }
   },
