@@ -2,6 +2,8 @@ import { Notify, LocalStorage } from 'quasar'
 import 'quasar/dist/quasar.prod.css'
 import iconSet from 'quasar/icon-set/eva-icons'
 import '@quasar/extras/eva-icons/eva-icons.css'
+import langCn from 'quasar/lang/zh-CN'
+
 export const quasarConfig = {
   config: {
     brand: {
@@ -18,6 +20,7 @@ export const quasarConfig = {
   },
   //buildIn components iconSet
   iconSet: iconSet,
+  lang: langCn,
   plugins: {
     Notify,
     LocalStorage
