@@ -187,9 +187,9 @@ export default {
     }
     const onConfirm = (savedUser, dep) => {
       let index = userList.value.findIndex((item) => item.id == user.value.id)
-      if (!isQueryChanged(savedUser) && (dep.id == department.value.id || isRoot())) {
+      if (!isQueryChanged(savedUser) && (dep.id == department.value.id || isRootDepartment())) {
         /*
-        情况1：查询结果未改变 && 
+        情况1：查询结果未改变 &&
         情况2：部门条件
             2.1.部门未改变 ||
             2.2.当前部门为根部门
@@ -201,18 +201,20 @@ export default {
         } else {
           userList.value.splice(index, 1, savedUser)
         }
-      } else if (index != '-1') {
+      } else {
         /*
         情况1：结果和查询条件不一致 ||
         情况2：部门改变且不是跟部门
         操作: 直接移除（如果为新增则不操作）
         */
-        countUser.value--
-        userList.value.splice(index, 1)
+        if (user.value.id) {
+          countUser.value--
+          userList.value.splice(index, 1)
+        }
       }
       userDialog.value = false
     }
-    const isRoot = () => {
+    const isRootDepartment = () => {
       if (department.value.parentId == '0') {
         // 当前节点为根节点
         return true
