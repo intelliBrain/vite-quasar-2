@@ -130,8 +130,8 @@ export default {
       params: { departmentId: '', enabled: '', keyword: '', page: 1 }
     })
     const statusOptions = [
-      { label: '离职', value: false },
-      { label: '在职', value: true }
+      { label: '离职', value: 'false' },
+      { label: '在职', value: 'true' }
     ]
 
     const columns = [
@@ -187,27 +187,54 @@ export default {
     }
     const onConfirm = (savedUser, dep) => {
       let index = userList.value.findIndex((item) => item.id == user.value.id)
-      if (dep.id == department.value.id || department.value.id == '1' || !department.value.id) {
-        if (user.value.id) {
-          if (
-            user.value.enabled != state.params.enabled ||
-            user.value.name != state.params.keyword
-          ) {
-            userList.value.splice(index, 1)
-          } else {
-            userList.value.splice(index, 1, savedUser)
-          }
-        } else {
-          if (userList.value.length == 10) {
-            userList.value.pop()
-          }
+      if (!isQueryChanged(savedUser) && (dep.id == department.value.id || isRootDepartment())) {
+        /*
+        情况1：查询结果未改变 &&
+        情况2：部门条件
+            2.1.部门未改变 ||
+            2.2.当前部门为根部门
+        操作: 进行插入或者修改
+        */
+        if (!user.value.id) {
           countUser.value++
           userList.value.unshift(savedUser)
+        } else {
+          userList.value.splice(index, 1, savedUser)
         }
-      } else if (dep.id != department.value.id) {
-        userList.value.splice(index, 1)
+      } else {
+        /*
+        情况1：结果和查询条件不一致 ||
+        情况2：部门改变且不是跟部门
+        操作: 直接移除（如果为新增则不操作）
+        */
+        if (user.value.id) {
+          countUser.value--
+          userList.value.splice(index, 1)
+        }
       }
       userDialog.value = false
+    }
+    const isRootDepartment = () => {
+      if (department.value.parentId == '0') {
+        // 当前节点为根节点
+        return true
+      } else if (!department.value.id) {
+        //没有选择节点，显示为根节点
+        return true
+      } else {
+        return false
+      }
+    }
+    const isQueryChanged = (savedUser) => {
+      if (state.params.enabled && savedUser.enabled != state.params.enabled) {
+        //状态发生改变
+        return true
+      } else if (state.params.keyword && savedUser.name != state.params.keyword) {
+        //姓名发生改变
+        return true
+      } else {
+        return false
+      }
     }
     const onClose = () => {
       userDialog.value = false
