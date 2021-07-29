@@ -1,18 +1,21 @@
 <template>
   <q-page>
-    <q-form @submit="onSubmit" @reset="onReset">
+    <q-form>
       <div class="row q-pa-md">
         <q-input
           outlined
-          v-model="params.startDate"
+          v-model="startDate"
           label="操作时间（始）"
           class="p-sm flex-1"
           dense
+          clearable
+          @update:model-value="searchLogs"
         >
           <q-popup-proxy transition-show="scale" transition-hide="scale" ref="popStartDate">
             <q-date
-              v-model="params.startDate"
+              v-model="startDate"
               mask="YYYY-MM-DD"
+              minimal
               @update:model-value="hideDatePicker('start')"
             >
             </q-date>
@@ -21,11 +24,21 @@
             <q-icon name="eva-calendar-outline" class="cursor-pointer"> </q-icon>
           </template>
         </q-input>
-        <q-input outlined v-model="params.endDate" label="操作时间（终）" class="p-sm flex-1" dense>
+        <q-input
+          outlined
+          v-model="endDate"
+          label="操作时间（终）"
+          class="p-sm flex-1"
+          dense
+          clearable
+          @update:model-value="searchLogs"
+        >
           <q-popup-proxy transition-show="scale" transition-hide="scale" ref="popEndDate">
             <q-date
-              v-model="params.endDate"
+              v-model="endDate"
               mask="YYYY-MM-DD"
+              minimal
+              :options="checkDateRange"
               @update:model-value="hideDatePicker('end')"
             >
             </q-date>
@@ -41,6 +54,7 @@
           label="模块"
           class="p-sm flex-1"
           dense
+          clearable
           @update:model-value="searchLogs"
         />
         <q-input
@@ -50,6 +64,7 @@
           label="消息"
           class="p-sm flex-1"
           dense
+          clearable
           @update:model-value="searchLogs"
         >
           <template v-slot:prepend>
@@ -63,6 +78,7 @@
           label="姓名或者账号"
           class="p-sm flex-1"
           dense
+          clearable
           @update:model-value="searchLogs"
         >
           <template v-slot:prepend>
@@ -81,6 +97,13 @@
         row-key="name"
         class="no-box-shadow"
       >
+        <template v-slot:header="props">
+          <q-tr :props="props">
+            <q-th v-for="col in props.cols" :key="col.name" :props="props" style="font-weight: 700">
+              {{ col.label }}
+            </q-th>
+          </q-tr>
+        </template>
         <template v-slot:body="props">
           <q-tr :props="props">
             <q-td key="name" :props="props">
@@ -138,7 +161,8 @@ export default {
     const dialogVisible = ref(false)
     const selectedLog = ref(null)
     const module = ref(null)
-    const dateLocale = {}
+    const startDate = ref(null)
+    const endDate = ref(null)
     const pages = ref(0)
     const params = ref({
       page: 1
@@ -188,6 +212,13 @@ export default {
 
     const rows = ref([])
 
+    const checkDateRange = (date) => {
+      if (startDate.value) {
+        return date >= startDate.value.replace(/-/gi, '/')
+      }
+      return true
+    }
+
     const viewDetail = (item) => {
       selectedLog.value = item
       dialogVisible.value = true
@@ -207,6 +238,20 @@ export default {
       if (module.value) {
         let m = module.value
         filter.module = m.value
+      } else {
+        filter.module = null
+      }
+
+      if (startDate.value) {
+        filter.startDate = startDate.value + ' 00:00:00'
+      } else {
+        filter.startDate = null
+      }
+
+      if (endDate.value) {
+        filter.endDate = endDate.value + ' 23:59:59'
+      } else {
+        filter.endDate = null
       }
 
       logApi.search(filter).then((res) => {
@@ -241,7 +286,9 @@ export default {
       params,
       search,
       searchLogs,
-      dateLocale
+      checkDateRange,
+      startDate,
+      endDate
     }
   },
   methods: {
