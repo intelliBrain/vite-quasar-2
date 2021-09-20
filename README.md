@@ -15,3 +15,14 @@ This starter template also includes:
 - [`unplugin-vue-components`](https://github.com/antfu/unplugin-vue-components) - components auto import
 - [`unplugin-auto-import`](https://github.com/antfu/unplugin-auto-import) - Directly use Vue Composition API and others without importing
 - [`vite-plugin-windicss`](https://github.com/antfu/vite-plugin-windicss) - Windi CSS Integration
+
+
+## Broken install binary on macOS #462
+> #!/usr/bin/env node throw new Error(esbuild: Failed to install correctly);
+
+```shell
+npm i
+node node_modules/esbuild/install.js
+
+npm run dev
+```
