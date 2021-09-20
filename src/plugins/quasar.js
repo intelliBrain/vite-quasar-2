@@ -1,7 +1,7 @@
 import { Notify, LocalStorage } from 'quasar'
 import 'quasar/dist/quasar.prod.css'
-import iconSet from 'quasar/icon-set/eva-icons'
-import '@quasar/extras/eva-icons/eva-icons.css'
+import iconSet from 'quasar/icon-set/material-icons'
+import '@quasar/extras/material-icons/material-icons.css'
 import langCn from 'quasar/lang/zh-CN'
 
 export const quasarConfig = {

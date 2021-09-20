@@ -1,18 +1,21 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
+    "module": "esnext",
+    "target": "esnext",
+    "lib": ["dom", "esnext"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "noUnusedLocals": true,
+    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["vite/client", "vite-plugin-pages/client"],
     "paths": {
-      "@/*": ["src/*"],
-      "src/*": ["src/*"],
-      "app/*": ["*"],
-      "components/*": ["src/components/*"],
-      "layouts/*": ["src/layouts/*"],
-      "pages/*": ["src/pages/*"],
-      "assets/*": ["src/assets/*"],
-      "boot/*": ["src/boot/*"],
-      "vue$": ["node_modules/vue/dist/vue.runtime.esm-bundler.js"]
+      "src/*": ["src/*"]
     }
   },
-  "include": ["./src/**/*", "src/plugins/resolver/.js"],
-  "exclude": ["dist", ".quasar", "node_modules"]
+  "exclude": ["dist", "node_modules"]
 }

@@ -5,23 +5,9 @@
     <router-link to="/" tag="a" class="text-primary">Back to home page</router-link>
   </q-page>
 </template>
-<script>
-export default {
-  props: {
-    all: {
-      type: Array,
-      required: true
-    }
-  },
-  setup(props) {
-    const params = JSON.stringify(props.all)
-    return {
-      params
-    }
-  }
-}
+<script setup="props">
+import { useRoute } from 'vue-router'
+const route = useRoute()
+
+const params = JSON.stringify(route.params)
 </script>
-<route lang="yaml">
-meta:
-  layout: blank
-</route>

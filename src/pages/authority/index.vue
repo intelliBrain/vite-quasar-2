@@ -24,26 +24,11 @@
   </q-page>
 </template>
 
-<script>
-import { ref } from 'vue'
-import RoleList from '@/components/authority/RoleList.vue'
-import DepartmentList from '@/components/authority/DepartmentList.vue'
-export default {
-  components: {
-    RoleList,
-    DepartmentList
-  },
-  setup() {
-    const tab = ref('department')
-    const tabs = {
-      role: '角色管理',
-      department: '组织架构'
-    }
-    return {
-      tab,
-      tabs
-    }
-  }
+<script setup>
+const tab = ref('department')
+const tabs = {
+  role: '角色管理',
+  department: '组织架构'
 }
 </script>
 

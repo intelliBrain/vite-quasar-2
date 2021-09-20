@@ -1,62 +1,39 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { LocalStorage } from 'quasar'
 
-import { setupLayouts } from 'virtual:generated-layouts'
 import generatedRoutes from 'virtual:generated-pages'
 
-// 手动实现layout
-// const routes = [
-//   {
-//     path: '',
-//     component: () => import('src/layouts/default.vue'),
-//     children: [
-//       {
-//         path: '/',
-//         component: () => import('src/pages/Index.vue')
-//       },
-//       ...generatedRoutes
-//     ]
-//   },
-//   {
-//     path: '/login',
-//     component: () => import('../pages/login.vue')
-//   },
-//   {
-//     path: '/register',
-//     component: () => import('../pages/register.vue')
-//   },
-//   {
-//     path: '/:catchAll(.*)*',
-//     component: () => import('../pages/_404.vue')
-//   }
-// ]
-
-const routes = setupLayouts(generatedRoutes)
+console.log(generatedRoutes)
+const routes = [
+  {
+    path: '/',
+    component: () => import('src/layouts/MainLayout.vue'),
+    children: [...generatedRoutes]
+  },
+  {
+    path: '/',
+    component: () => import('src/layouts/BlankLayout.vue'),
+    children: [
+      {
+        name: 'all',
+        path: ':all(.*)*',
+        component: () => import('src/pages/[...all].vue')
+      },
+      {
+        name: 'login',
+        path: 'login',
+        component: () => import('src/pages/login.vue')
+      },
+      {
+        name: 'register',
+        path: 'register',
+        component: () => import('src/pages/register.vue')
+      }
+    ]
+  }
+]
 const router = createRouter({
   history: createWebHistory(),
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  const accessToken = LocalStorage.getItem('User/accessToken') || {}
-  const publicRoutes = ['login', 'Register']
-
-  if (!publicRoutes.includes(to.name) && !accessToken.tokenValue) {
-    LocalStorage.set('lastUrl', to.path)
-    console.log('Requested url rejected: ' + LocalStorage.getItem('lastUrl'))
-
-    next({ name: 'login' })
-
-    return
-  }
-
-  if (to.name === 'Logout') {
-    LocalStorage.remove('lastUrl')
-    LocalStorage.remove('User/accessToken')
-    next({ name: 'login', params: { msgType: 'login' } })
-    return
-  }
-
-  next()
-})
 export default router
