@@ -6,25 +6,25 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@quasar/extras": "^1.11.0",
+    "@quasar/extras": "^1.11.2",
     "axios": "^0.21.4",
     "qs": "^6.10.1",
-    "quasar": "^2.1.0",
-    "vue": "^3.2.12",
+    "quasar": "^2.1.1",
+    "vue": "^3.2.20",
     "vue-router": "^4.0.11",
     "vuex": "^4.0.2"
   },
   "devDependencies": {
-    "@iconify/json": "^1.1.403",
-    "@vitejs/plugin-vue": "^1.8.1",
-    "@vue/compiler-sfc": "^3.2.12",
-    "sass": "^1.41.1",
-    "unplugin-auto-import": "^0.4.6",
-    "unplugin-icons": "^0.11.1",
-    "unplugin-vue-components": "^0.15.1",
-    "vite": "^2.5.10",
-    "vite-plugin-pages": "^0.14.9",
-    "vite-plugin-windicss": "^1.4.3",
-    "windicss": "^3.1.7"
+    "@iconify/json": "^1.1.413",
+    "@vitejs/plugin-vue": "^1.9.3",
+    "@vue/compiler-sfc": "^3.2.20",
+    "sass": "^1.42.1",
+    "unplugin-auto-import": "^0.4.12",
+    "unplugin-icons": "0.12.13",
+    "unplugin-vue-components": "^0.15.6",
+    "vite": "^2.6.5",
+    "vite-plugin-pages": "0.18.1",
+    "vite-plugin-windicss": "^1.4.10",
+    "windicss": "^3.1.9"
   }
 }
