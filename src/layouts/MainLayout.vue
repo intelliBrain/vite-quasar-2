@@ -6,11 +6,11 @@
       </span>
 
       <q-tabs v-model="tab" inline-label class="text-primary h-60px text-xl">
-        <q-route-tab :ripple="false" to="/" name="homepage" label="首页" />
-        <q-route-tab :ripple="false" to="/authority" name="authority" label="权限管理">
+        <q-route-tab :ripple="false" to="/" name="homepage" label="Index" />
+        <q-route-tab :ripple="false" to="/authority" name="authority" label="Permission">
         </q-route-tab>
-        <q-route-tab :ripple="false" to="/system/log" name="syslog" label="日志管理"> </q-route-tab>
-        <q-tab :ripple="false" name="cat" label="分类入口">
+        <q-route-tab :ripple="false" to="/system/log" name="syslog" label="Log"> </q-route-tab>
+        <q-tab :ripple="false" name="cat" label="Category">
           <q-menu>
             <q-list style="min-width: 100px">
               <q-item clickable v-close-popup>

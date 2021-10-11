@@ -1,7 +1,7 @@
 import router from 'src/router'
 import axios from 'axios'
 import qs from 'qs'
-import errorMsgs from '@/lang/lang.js'
+import errorMsgs from 'src/assets/langs/en.js'
 import { LocalStorage, Notify } from 'quasar'
 
 const parseError = (result) => {

@@ -12,13 +12,5 @@ export default {
   'User account is disabled': '账户已禁用',
   'User account has expired': '账户已过期',
   'Bad credentials': '帐号或密码错误',
-  badCredential: '帐号或密码错误',
-  badSmsCode: '短信验证码错误',
-  noPermissionToOperate: '无权限访问或操作数据',
-  userNotFound: '用户不存在',
-  afsValidateFailed: '智能验证失败，请稍后重试',
-  sessionExpired: '会话超时，请重新登陆',
-  duplicatedUser: '用户已存在',
-  duplicatedOperation: '当日运营信息已存在',
-  captchaFailed: '验证码错误或页面已过期'
+  badCredential: '帐号或密码错误'
 }
