@@ -1,10 +1,15 @@
 <template>
   <q-page class="q-pa-md column flex-center">
-    <img alt="Vue logo" src="src/assets/images/logo.png" class="w-35px" />
-    <icon-mdi-notification-clear-all class="text-h6 text-weight-bold" />
+    <div class="logo">
+      <img alt="Vue logo" src="src/assets/images/logo.png" class="w-35px inline-block" />
+      <icon-mdi-notification-clear-all
+        class="text-h3 text-weight-bold text-dark-200 inline-block"
+      />
+    </div>
+    <span class="text-dark-200 text-h5 pt-sm pb-md">build on top of quasar with windicss</span>
     <q-card class="column items-stretch">
       <q-card-section>
-        <p class="text-blue-500 font-bold px-md">demo form quasar</p>
+        <p class="text-blue-500 font-bold px-md">demo from quasar</p>
       </q-card-section>
       <q-separator />
       <q-card-section class="justify-start flex-1">

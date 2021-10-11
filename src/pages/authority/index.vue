@@ -27,8 +27,8 @@
 <script setup>
 const tab = ref('department')
 const tabs = {
-  role: '角色管理',
-  department: '组织架构'
+  role: 'Role',
+  department: 'department'
 }
 </script>
 
