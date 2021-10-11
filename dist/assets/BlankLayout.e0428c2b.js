@@ -1,0 +1,1 @@
+import{d as r,J as t,A as n,B as s,F as a,E as c}from"./vendor.34d1beb4.js";import{_ as u}from"./index.6f067a4f.js";import"./vendor-quasar.fc061f32.js";const p=r({setup(){return{router:t()}}});function f(e,_,d,i,m,l){const o=n("router-view");return s(),a("main",null,[c(o)])}var $=u(p,[["render",f]]);export{$ as default};
