@@ -1,6 +1,7 @@
 ## `Vite 2.x + Vue 3.x + quasar 2.x starter ⚡`
 
-**offical quasar vite cli is release.🌹 **
+**offical quasar vite cli is release.🌹 ** ,then this branch will be the default branch. then some of the third part will
+ migrate to this branch later.
 
 - [X] - [@quasar/vite-plugin](https://quasar.dev/start/vite-plugin)
 - [X] - [quasar 2.x](https://github.com/quasarframework/quasar)
