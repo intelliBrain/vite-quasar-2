@@ -1,7 +1,27 @@
-# Vue 3 + Vite
+## `Vite 2.x + Vue 3.x + quasar 2.x starter ⚡`
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+**offical quasar vite cli is release.🌹 **
 
-## Recommended IDE Setup
+- [X] - [@quasar/vite-plugin](https://quasar.dev/start/vite-plugin)
+- [X] - [quasar 2.x](https://github.com/quasarframework/quasar)
+- [X] - [vite 2.x](https://github.com/vitejs/vite)
 
-- [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
+This starter template also includes an plain :
+
+- [ ]  - [Vue Router 4.x](https://github.com/vuejs/vue-router-next)
+- [ ]  - [Windi CSS](https://github.com/windicss/windicss)
+- [ ]  - Use the [new `<script setup>` syntax](https://github.com/vuejs/rfcs/pull/227)
+- [ ]  - [APIs auto importing](https://github.com/antfu/unplugin-auto-import) - use Composition API and others directly
+- [ ]  - [`vite-plugin-pages`](https://github.com/hannoeru/vite-plugin-pages) - file system based routing
+- [ ]  - [`unplugin-vue-components`](https://github.com/antfu/unplugin-vue-components) - components auto import
+- [ ]  - [`unplugin-auto-import`](https://github.com/antfu/unplugin-auto-import) - Directly use Vue Composition API and others without importing
+- [ ]  - [`vite-plugin-windicss`](https://github.com/antfu/vite-plugin-windicss) - Windi CSS Integration
+
+## Out of box functions 
+
+- [ ] - api base axios
+- [ ] - pina as default state management
+
+## TODO 
+
+some of the other are existed to use for improving your efficiency when use vue. they are waiting for discovered.
