@@ -1,6 +1,5 @@
 <script setup>
   import { ref } from 'vue'
-
   defineProps({
     msg: String,
   })
@@ -9,7 +8,7 @@
 </script>
 
 <template>
-  <h1>{{ msg }}</h1>
+  <div class="text-2xl text-pink-300">{{ msg }}</div>
 
   <p>
     Recommended IDE setup:
@@ -24,7 +23,7 @@
     <a href="https://v3.vuejs.org/" target="_blank">Vue 3 Documentation</a>
   </p>
 
-  <q-btn color="primary" icon="check" :label="'count is: ' + count" @click="count++" />
+  <q-btn color="primary mb-20px" icon="check" :label="'count is: ' + count" @click="count++" />
   <p>
     Edit
     <code>components/HelloWorld.vue</code> to test hot module replacement.
