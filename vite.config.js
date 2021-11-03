@@ -10,7 +10,6 @@ export default defineConfig({
     vue({
       template: { transformAssetUrls },
     }),
-    // Unocss(),
     quasar({
       sassVariables: 'src/assets/style/quasar-variables.sass',
     }),
@@ -21,6 +20,27 @@ export default defineConfig({
     alias: {
       src: resolve(__dirname, './src'),
       '@': resolve(__dirname, './src'),
+    },
+  },
+  build: {
+    terserOptions: {
+      compress: {
+        drop_console: true,
+      },
+    },
+    // reportCompressedSize: true,
+    chunkSizeWarningLimit: 1024,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('/node_modules/')) {
+            //设置需要独立打包的npm包
+            const modules = ['quasar', '@quasar', 'vue', '@vue']
+            const chunk = modules.find((module) => id.includes(`/node_modules/${module}`))
+            return chunk ? `vendor-${chunk}` : 'vendor'
+          }
+        },
+      },
     },
   },
 })

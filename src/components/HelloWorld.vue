@@ -1,10 +1,9 @@
-<script setup>
-  import { ref } from 'vue'
-  defineProps({
-    msg: String,
-  })
+<script setup="props" lang="ts">
+  import { ref, toRefs } from 'vue'
+  const props = defineProps<{ msg: string }>()
 
   const count = ref(0)
+  const { msg } = toRefs(props)
 </script>
 
 <template>

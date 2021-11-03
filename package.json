@@ -8,7 +8,9 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.11.2",
+    "pnpm": "^6.19.1",
     "quasar": "^2.2.0",
+    "typescript": "^4.4.4",
     "vue": "^3.2.16",
     "vue-router": "^4.0.12"
   },
