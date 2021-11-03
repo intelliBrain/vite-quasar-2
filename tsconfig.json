@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "target": "esnext",
-    "module": "esnext",
-    "lib": ["dom", "esnext"],
+    "module": "ESNext",
+    "target": "ESNext",
+    "lib": ["DOM", "ESNext"],
     "strict": true,
     "esModuleInterop": true,
+    "incremental": false,
     "skipLibCheck": true,
     // "allowJs": true,
     "jsx": "preserve",

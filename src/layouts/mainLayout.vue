@@ -39,7 +39,7 @@
 
   const router = useRouter()
 
-  const leftDrawerOpen = ref(false)
+  const leftDrawerOpen = ref<boolean>(false)
   const toggleLeftDrawer = () => {
     leftDrawerOpen.value = !leftDrawerOpen.value
   }

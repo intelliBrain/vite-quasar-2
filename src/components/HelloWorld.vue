@@ -1,6 +1,8 @@
-<script setup="props" lang="ts">
+<script setup lang="ts">
   import { ref, toRefs } from 'vue'
-  const props = defineProps<{ msg: string }>()
+  const props = defineProps({
+    msg: String,
+  })
 
   const count = ref(0)
   const { msg } = toRefs(props)
