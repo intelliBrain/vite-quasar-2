@@ -5,8 +5,8 @@
   </div>
 </template>
 
-<script setup>
-  // This starter template is using Vue 3 <script setup> SFCs
+<script setup lang="ts">
+  // This starter template is using Vue 3 <script setup lang="ts"> SFCs
   // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
   import HelloWorld from 'src/components/HelloWorld.vue'
 </script>
