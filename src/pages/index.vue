@@ -10,21 +10,19 @@
     name: string
     age: number
   }
+  import { userApi } from 'src/api/user'
   import { ref } from 'vue'
   import HelloWorld from 'src/components/HelloWorld.vue'
-  const emit = defineEmits(['update'])
 
+  const emit = defineEmits(['update'])
   const changed = ref(false)
   changed.value = true
-  const getUser = (): User => {
-    emit('update', {
-      name: 'John Doe',
-      age: 30,
+
+  const getUser = (): void => {
+    userApi.get(2).then((res) => {
+      const user: User = res.data
+      emit('update', user)
     })
-    return {
-      name: 'John Doe',
-      age: 30,
-    }
   }
 </script>
 
