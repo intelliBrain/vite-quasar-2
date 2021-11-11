@@ -9,8 +9,12 @@
 </script>
 
 <template>
-  <div class="text-2xl text-pink-300">{{ msg }}</div>
+  <div class="text-2xl text-pink-300 py-20px">{{ msg }}</div>
 
+  <p class="m-1 p-1 bg-gray-100">test p attribute</p>
+  <p class="m-2 p-2 bg-gray-200">test p attribute</p>
+  <p class="m-3 p-3 bg-gray-300">test p attribute</p>
+  <p class="m-4 p-4 bg-gray-400">test p attribute</p>
   <p>
     Recommended IDE setup:
     <a href="https://code.visualstudio.com/" target="_blank">VSCode</a>

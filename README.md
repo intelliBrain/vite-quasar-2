@@ -21,7 +21,7 @@ This starter template also includes an plain :
 
 ## Out of box functions 
 
-- [ ] - api base axios
+- [x] - api base axios
 - [ ] - pina as default state management
 
 ## TODO 
