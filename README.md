@@ -11,10 +11,10 @@ This starter template also includes an plain :
 
 - [x]  - [Vue Router 4.x](https://github.com/vuejs/vue-router-next)
 - [x]  - [UnoCSS](https://github.com/antfu/unocss)[The instant on-demand Atomic CSS engine. and next architecture for windycss v4]
-- [x]  - Use the [new `<script setup lang="ts">` syntax](https://github.com/vuejs/rfcs/pull/227)
+- [x]  - [new `<script setup lang="ts">` syntax](https://github.com/vuejs/rfcs/pull/227)
 - [x]  - [`vite-plugin-pages`](https://github.com/hannoeru/vite-plugin-pages) - file system based routing
-- [ ]  - ~~[APIs auto importing](https://github.com/antfu/unplugin-auto-import)~~ - use Composition API and others directly[**ts with volar provider best type support**]
 - [ ]  - ~~[Windi CSS](https://github.com/windicss/windicss)~~[**droped** and replaced with **UnoCSS**]
+- [ ]  - ~~[APIs auto importing](https://github.com/antfu/unplugin-auto-import)~~ - use Composition API and others directly[**ts with volar provider best type support**]
 - [ ]  - ~~[`unplugin-vue-components`](https://github.com/antfu/unplugin-vue-components)~~ - components auto import[**ts with volar provider best type support**]
 
 ## Out of box functions 
