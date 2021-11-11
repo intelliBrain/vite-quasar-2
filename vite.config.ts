@@ -9,7 +9,9 @@ export default defineConfig({
   plugins: [
     vue({ template: { transformAssetUrls } }),
     quasar({ sassVariables: 'src/assets/style/quasar-variables.sass' }),
-    Pages(),
+    Pages({
+      exclude: ['**/components/*.vue'],
+    }),
     Unocss({}),
   ],
   resolve: {
